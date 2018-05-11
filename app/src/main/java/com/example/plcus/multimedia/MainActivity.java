@@ -21,14 +21,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final TextView helloWorldText = (TextView)findViewById(R.id.helloWorldText);
+        final TextView songText = (TextView)findViewById(R.id.songText);
+        final TextView artistText = (TextView)findViewById(R.id.artistText);
+        final TextView albumText = (TextView)findViewById(R.id.albumText);
 
         ImageButton previousButton = (ImageButton)findViewById(R.id.previousButton);
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "previousButtonClick");
-                helloWorldText.setText("previous");
+                albumText.setText("previous");
             }
         });
 
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "playButtonClick");
-                helloWorldText.setText("play");
+                albumText.setText("play");
             }
         });
 
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "stopButtonClick");
-                helloWorldText.setText("stop");
+                albumText.setText("stop");
             }
         });
 
@@ -55,7 +57,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "nextButtonClick");
-                helloWorldText.setText("next");
+                albumText.setText("next");
+            }
+        });
+
+        ImageButton shuffleButton = (ImageButton)findViewById(R.id.shuffleButton);
+        shuffleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(this.getClass().getName(), "shuffleButtonClick");
+                albumText.setText("shuffle");
+            }
+        });
+
+        ImageButton repeatButton = (ImageButton)findViewById(R.id.repeatButton);
+        repeatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(this.getClass().getName(), "repeatButtonClick");
+                albumText.setText("repeat");
             }
         });
 
@@ -67,24 +87,6 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
-
-        ImageButton shuffleButton = (ImageButton)findViewById(R.id.shuffleButton);
-        shuffleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(this.getClass().getName(), "shuffleButtonClick");
-                helloWorldText.setText("shuffle");
-            }
-        });
-
-        ImageButton repeatButton = (ImageButton)findViewById(R.id.repeatButton);
-        repeatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(this.getClass().getName(), "repeatButtonClick");
-                helloWorldText.setText("repeat");
-            }
-        });
     }
 
     @Override
