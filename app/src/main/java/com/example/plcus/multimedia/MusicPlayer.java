@@ -5,17 +5,16 @@ import android.support.v7.app.AppCompatActivity;
 
 public class MusicPlayer implements IMusicPlayer {
 
-    MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
+    private Playlist playlist;
+    private AppCompatActivity activity;
 
     public MusicPlayer(AppCompatActivity activity) {
 
-        mediaPlayer = MediaPlayer.create(activity.getApplicationContext(), R.raw.good_life);
-        mediaPlayer.setVolume(1,1);
-        try {
-            mediaPlayer.prepare();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.activity = activity;
+        playlist = new Playlist();
+
+        prepareMediaPlayer(playlist.getCurrentSong());
         mediaPlayer.start();
     }
 
@@ -36,12 +35,13 @@ public class MusicPlayer implements IMusicPlayer {
 
     @Override
     public void previous() {
-
+        playSong(playlist.getPreviousSong());
     }
 
     @Override
     public void next() {
-
+        playSong(playlist.getNextSong());
+        mediaPlayer.start();
     }
 
     @Override
@@ -52,11 +52,30 @@ public class MusicPlayer implements IMusicPlayer {
         else {
             mediaPlayer.setLooping(true);
         }
-
     }
 
     @Override
     public void shuffle() {
+        playlist.shuffle();
+    }
 
+    private void playSong(int songId) {
+        prepareMediaPlayer(songId);
+        mediaPlayer.start();
+    }
+
+    private void prepareMediaPlayer(int songId) {
+
+        if(mediaPlayer != null) {
+            mediaPlayer.reset();
+        }
+
+        mediaPlayer = MediaPlayer.create(activity, songId);
+        mediaPlayer.setVolume(1,1);
+        try {
+            mediaPlayer.prepare();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
