@@ -2,6 +2,7 @@ package com.example.plcus.multimedia;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -39,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        songText = (TextView)findViewById(R.id.songText);
-        artistText = (TextView)findViewById(R.id.artistText);
-        albumText = (TextView)findViewById(R.id.albumText);
+        songText = (TextView) findViewById(R.id.songText);
+        artistText = (TextView) findViewById(R.id.artistText);
+        albumText = (TextView) findViewById(R.id.albumText);
 
         initPreviousButton();
         initPlayButton();
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         initShuffleButton();
         initRepeatButton();
 
-        musicPlayer = new MusicPlayer();
+        musicPlayer = new MusicPlayer(this);
 
     }
 
@@ -77,101 +78,74 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRepeatButton() {
-        repeatButton = (ImageButton)findViewById(R.id.repeatButton);
+        repeatButton = (ImageButton) findViewById(R.id.repeatButton);
         repeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "repeatButtonClick");
                 albumText.setText("repeat");
+                musicPlayer.repeat();
             }
         });
     }
 
     private void initShuffleButton() {
-        shuffleButton = (ImageButton)findViewById(R.id.shuffleButton);
+        shuffleButton = (ImageButton) findViewById(R.id.shuffleButton);
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "shuffleButtonClick");
                 albumText.setText("shuffle");
+                musicPlayer.shuffle();
             }
         });
     }
 
     private void initNextButton() {
-        nextButton = (ImageButton)findViewById(R.id.nextButton);
+        nextButton = (ImageButton) findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "nextButtonClick");
                 albumText.setText("next");
+                musicPlayer.next();
             }
         });
     }
 
     private void initStopButton() {
-        stopButton = (ImageButton)findViewById(R.id.stopButton);
+        stopButton = (ImageButton) findViewById(R.id.stopButton);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "stopButtonClick");
                 albumText.setText("stop");
+                musicPlayer.stop();
             }
         });
     }
 
     private void initPlayButton() {
-        playButton = (ImageButton)findViewById(R.id.playButton);
+        playButton = (ImageButton) findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "playButtonClick");
                 albumText.setText("play");
-                musicPlayer.play();
-                playTest();
+                musicPlayer.playOrPause();
             }
         });
     }
 
     private void initPreviousButton() {
-        previousButton = (ImageButton)findViewById(R.id.previousButton);
+        previousButton = (ImageButton) findViewById(R.id.previousButton);
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getName(), "previousButtonClick");
                 albumText.setText("previous");
+                musicPlayer.previous();
             }
         });
-    }
-
-    private void playTest() {
-//        //                MediaPlayer mediaPlayer = new MediaPlayer();
-//
-////                MediaPlayer mediaPlayer;
-//
-//        MediaPlayer mediaPlayer = new MediaPlayer();
-//
-//        try {
-//
-//            String filename = "android.resource://" + getPackageName() + "/raw/test0";
-//
-//            URI uri = URI.create("C:/Users/plcus/Music/Good Life.mp3");
-//            int id = getResources().getIdentifier("test0", "raw", getPackageName());
-//
-//            mediaPlayer.setDataSource(getApplicationContext(), uri);
-//
-////                    mediaPlayer = MediaPlayer.create();
-//
-////                    mediaPlayer = MediaPlayer.create(getApplicationContext(), getResources().getIdentifier("Good Life.mp3","raw", "C:\\Users\\plcus\\Music"));
-////                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-////                    mediaPlayer.setDataSource("C:\\Users\\plcus\\Music\\Good Life.mp3");
-//            mediaPlayer.prepare();
-//            mediaPlayer.setVolume(1,1);
-//            mediaPlayer.start();
-//            albumText.setText("AAAAAAAAAAA");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            albumText.setText("crash");
-//        }
     }
 }

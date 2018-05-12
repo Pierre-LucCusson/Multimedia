@@ -2,9 +2,7 @@ package com.example.plcus.multimedia;
 
 public interface IMusicPlayer {
 
-    void play();
-
-    void pause();
+    void playOrPause();
 
     void stop();
 
