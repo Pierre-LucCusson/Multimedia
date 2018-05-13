@@ -37,12 +37,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        songText = (TextView) findViewById(R.id.songText);
-        artistText = (TextView) findViewById(R.id.artistText);
-        albumText = (TextView) findViewById(R.id.albumText);
+        songText = findViewById(R.id.songText);
+        artistText = findViewById(R.id.artistText);
+        albumText = findViewById(R.id.albumText);
 
         initPreviousButton();
         initPlayButton();
@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
         initShuffleButton();
         initRepeatButton();
 
-        musicPlayer = new MusicPlayer(this);
+        musicPlayer = new LocalMusicPlayer();
+        musicPlayer.initialise(this);
 
     }
 
@@ -73,16 +74,27 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        else if (id == R.id.action_local) {
+            setMusicPlayerToLocal();
+            return true;
+        }
+        else if (id == R.id.action_client) {
+            setMusicPlayerToClient();
+            return true;
+        }
+        else if (id == R.id.action_server) {
+            setMusicPlayerToServer();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
     private void initRepeatButton() {
-        repeatButton = (ImageButton) findViewById(R.id.repeatButton);
+        repeatButton = findViewById(R.id.repeatButton);
         repeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(this.getClass().getName(), "repeatButtonClick");
                 albumText.setText("repeat");
                 musicPlayer.repeat();
             }
@@ -90,11 +102,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initShuffleButton() {
-        shuffleButton = (ImageButton) findViewById(R.id.shuffleButton);
+        shuffleButton = findViewById(R.id.shuffleButton);
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(this.getClass().getName(), "shuffleButtonClick");
                 albumText.setText("shuffle");
                 musicPlayer.shuffle();
             }
@@ -102,11 +113,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initNextButton() {
-        nextButton = (ImageButton) findViewById(R.id.nextButton);
+        nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(this.getClass().getName(), "nextButtonClick");
                 albumText.setText("next");
                 musicPlayer.next();
             }
@@ -114,11 +124,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initStopButton() {
-        stopButton = (ImageButton) findViewById(R.id.stopButton);
+        stopButton = findViewById(R.id.stopButton);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(this.getClass().getName(), "stopButtonClick");
                 albumText.setText("stop");
                 musicPlayer.stop();
             }
@@ -126,11 +135,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPlayButton() {
-        playButton = (ImageButton) findViewById(R.id.playButton);
+        playButton = findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(this.getClass().getName(), "playButtonClick");
                 albumText.setText("play");
                 musicPlayer.playOrPause();
             }
@@ -138,14 +146,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPreviousButton() {
-        previousButton = (ImageButton) findViewById(R.id.previousButton);
+        previousButton = findViewById(R.id.previousButton);
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(this.getClass().getName(), "previousButtonClick");
                 albumText.setText("previous");
                 musicPlayer.previous();
             }
         });
+    }
+
+    private void setMusicPlayerToClient(){
+        musicPlayer = new ClientMusicPlayer();
+        musicPlayer.initialise(this);
+    }
+
+    private void setMusicPlayerToLocal(){
+        musicPlayer = new LocalMusicPlayer();
+        musicPlayer.initialise(this);
+    }
+
+    private void setMusicPlayerToServer(){
+        musicPlayer = new ServerMusicPlayer();
+        musicPlayer.initialise(this);
     }
 }

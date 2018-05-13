@@ -3,68 +3,32 @@ package com.example.plcus.multimedia;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 
-public class MusicPlayer implements IMusicPlayer {
+public abstract class MusicPlayer implements IMusicPlayer{
 
-    private MediaPlayer mediaPlayer;
-    private Playlist playlist;
-    private AppCompatActivity activity;
+    protected AppCompatActivity activity;
+    protected MediaPlayer mediaPlayer;
+    protected Playlist playlist;
 
-    public MusicPlayer(AppCompatActivity activity) {
+    public abstract void  initialise(AppCompatActivity activity);
 
-        this.activity = activity;
-        playlist = new Playlist();
+    public abstract void playOrPause();
 
-        prepareMediaPlayer(playlist.getCurrentSong());
-        mediaPlayer.start();
-    }
+    public abstract void stop();
 
-    @Override
-    public void playOrPause() {
-        if(mediaPlayer.isPlaying()){
-            mediaPlayer.pause();
-        }
-        else {
-            mediaPlayer.start();
-        }
-    }
+    public abstract void previous();
 
-    @Override
-    public void stop() {
-        mediaPlayer.pause();
-    }
+    public abstract void next();
 
-    @Override
-    public void previous() {
-        playSong(playlist.getPreviousSong());
-    }
+    public abstract void repeat();
 
-    @Override
-    public void next() {
-        playSong(playlist.getNextSong());
-        mediaPlayer.start();
-    }
+    public abstract void shuffle();
 
-    @Override
-    public void repeat() {
-        if(mediaPlayer.isLooping()) {
-            mediaPlayer.setLooping(false);
-        }
-        else {
-            mediaPlayer.setLooping(true);
-        }
-    }
-
-    @Override
-    public void shuffle() {
-        playlist.shuffle();
-    }
-
-    private void playSong(int songId) {
+    protected void playSong(int songId) {
         prepareMediaPlayer(songId);
         mediaPlayer.start();
     }
 
-    private void prepareMediaPlayer(int songId) {
+    protected void prepareMediaPlayer(int songId) {
 
         if(mediaPlayer != null) {
             mediaPlayer.reset();
@@ -78,4 +42,5 @@ public class MusicPlayer implements IMusicPlayer {
             e.printStackTrace();
         }
     }
+
 }

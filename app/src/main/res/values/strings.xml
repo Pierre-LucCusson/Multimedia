@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Multimedia</string>
     <string name="action_settings">Settings</string>
+    <string name="action_local">Play songs locally</string>
+    <string name="action_client">Play songs from server</string>
+    <string name="action_server">Play songs on server</string>
 </resources>
