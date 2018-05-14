@@ -1,22 +1,13 @@
 package com.example.plcus.multimedia;
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import java.io.IOException;
-import java.net.URI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView songText;
     private TextView artistText;
     private TextView albumText;
+    private TextView progressionTimeText;
+    private TextView totalTimeText;
 
     private MusicPlayer musicPlayer;
 
@@ -43,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         songText = findViewById(R.id.songText);
         artistText = findViewById(R.id.artistText);
         albumText = findViewById(R.id.albumText);
+
+        progressionTimeText = findViewById(R.id.progressionTimeText);
+        totalTimeText = findViewById(R.id.totalTimeText);
 
         initPreviousButton();
         initPlayButton();
@@ -95,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         repeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                albumText.setText("repeat");
                 musicPlayer.repeat();
             }
         });
@@ -106,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                albumText.setText("shuffle");
                 musicPlayer.shuffle();
             }
         });
@@ -117,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                albumText.setText("next");
                 musicPlayer.next();
             }
         });
@@ -128,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                albumText.setText("stop");
                 musicPlayer.stop();
             }
         });
@@ -139,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                albumText.setText("play");
                 musicPlayer.playOrPause();
             }
         });
@@ -150,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                albumText.setText("previous");
                 musicPlayer.previous();
             }
         });
@@ -169,5 +159,12 @@ public class MainActivity extends AppCompatActivity {
     private void setMusicPlayerToServer(){
         musicPlayer = new ServerMusicPlayer();
         musicPlayer.initialise(this);
+    }
+
+    public void updateTextFor(Song song) {
+        songText.setText(song.getTitle());
+        artistText.setText(song.getArtist());
+        albumText.setText(song.getAlbum());
+        totalTimeText.setText(song.getLength());
     }
 }

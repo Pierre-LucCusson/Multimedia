@@ -1,15 +1,14 @@
 package com.example.plcus.multimedia;
 
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 
 public abstract class MusicPlayer implements IMusicPlayer{
 
-    protected AppCompatActivity activity;
+    protected MainActivity activity;
     protected MediaPlayer mediaPlayer;
     protected Playlist playlist;
 
-    public abstract void  initialise(AppCompatActivity activity);
+    public abstract void  initialise(MainActivity activity);
 
     public abstract void playOrPause();
 
@@ -23,24 +22,25 @@ public abstract class MusicPlayer implements IMusicPlayer{
 
     public abstract void shuffle();
 
-    protected void playSong(int songId) {
-        prepareMediaPlayer(songId);
+    protected void playSong(Song song) {
+        prepareMediaPlayer(song);
         mediaPlayer.start();
     }
 
-    protected void prepareMediaPlayer(int songId) {
+    protected void prepareMediaPlayer(Song song) {
 
         if(mediaPlayer != null) {
             mediaPlayer.reset();
         }
 
-        mediaPlayer = MediaPlayer.create(activity, songId);
+        mediaPlayer = MediaPlayer.create(activity, song.getId());
         mediaPlayer.setVolume(1,1);
         try {
             mediaPlayer.prepare();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        activity.updateTextFor(song);
     }
 
 }

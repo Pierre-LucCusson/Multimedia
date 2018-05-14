@@ -1,14 +1,13 @@
 package com.example.plcus.multimedia;
 
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 public class LocalMusicPlayer extends MusicPlayer {
 
     @Override
-    public void initialise(AppCompatActivity activity) {
+    public void initialise(MainActivity activity) {
         this.activity = activity;
-        playlist = new Playlist();
+        playlist = new Playlist(activity);
 
         prepareMediaPlayer(playlist.getCurrentSong());
         mediaPlayer.start();

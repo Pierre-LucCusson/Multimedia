@@ -1,26 +1,31 @@
 package com.example.plcus.multimedia;
 
+import android.support.v7.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Playlist {
 
-    private List<Integer> songs;
-    public int songIndex;
+    private AppCompatActivity activity;
+    private List<Song> songs;
+    private int songIndex;
 
-    public Playlist() {
+    public Playlist(AppCompatActivity activity) {
+
+        this.activity = activity;
         songs = new ArrayList<>();
-        songs.add(R.raw.good_life);
         //TODO add more songs
+        songs.add(new Song(activity, R.raw.good_life));
 
         songIndex = 0;
     }
 
-    public int getCurrentSong() {
+    public Song getCurrentSong() {
         return songs.get(songIndex);
     }
 
-    public int getPreviousSong() {
+    public Song getPreviousSong() {
         if (songIndex == 0) {
             songIndex = songs.size() - 1;
         }
@@ -29,7 +34,7 @@ public class Playlist {
         }
         return songs.get(songIndex);
     }
-    public int getNextSong() {
+    public Song getNextSong() {
         if (songIndex == songs.size() - 1) {
             songIndex = 0;
         }
