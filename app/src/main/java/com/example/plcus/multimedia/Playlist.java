@@ -3,13 +3,14 @@ package com.example.plcus.multimedia;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Playlist {
 
     private AppCompatActivity activity;
     private List<Song> songs;
-    private int songIndex;
+    private int indexOfSongPlaying;
 
     public Playlist(AppCompatActivity activity) {
 
@@ -18,33 +19,33 @@ public class Playlist {
         //TODO add more songs
         songs.add(new Song(activity, R.raw.good_life));
 
-        songIndex = 0;
+        indexOfSongPlaying = 0;
     }
 
     public Song getCurrentSong() {
-        return songs.get(songIndex);
+        return songs.get(indexOfSongPlaying);
     }
 
     public Song getPreviousSong() {
-        if (songIndex == 0) {
-            songIndex = songs.size() - 1;
+        if (indexOfSongPlaying == 0) {
+            indexOfSongPlaying = songs.size() - 1;
         }
         else {
-            songIndex--;
+            indexOfSongPlaying--;
         }
-        return songs.get(songIndex);
+        return songs.get(indexOfSongPlaying);
     }
     public Song getNextSong() {
-        if (songIndex == songs.size() - 1) {
-            songIndex = 0;
+        if (indexOfSongPlaying == songs.size() - 1) {
+            indexOfSongPlaying = 0;
         }
         else {
-            songIndex++;
+            indexOfSongPlaying++;
         }
-        return songs.get(songIndex);
+        return songs.get(indexOfSongPlaying);
     }
 
     public void shuffle() {
-        //TODO shuffle list of songs
+        Collections.shuffle(songs);
     }
 }

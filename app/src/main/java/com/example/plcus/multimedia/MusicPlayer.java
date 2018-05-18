@@ -22,6 +22,12 @@ public abstract class MusicPlayer implements IMusicPlayer{
 
     public abstract void shuffle();
 
+    public void seekTo(int mSec) {
+        if (mediaPlayer != null) {
+            mediaPlayer.seekTo(mSec);
+        }
+    }
+
     protected void playSong(Song song) {
         prepareMediaPlayer(song);
         mediaPlayer.start();
@@ -40,7 +46,29 @@ public abstract class MusicPlayer implements IMusicPlayer{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         activity.updateTextFor(song);
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                playSong(playlist.getNextSong());
+            }
+        });
     }
+
+    public boolean isMediaPlayerNull() {
+        return mediaPlayer == null;
+    }
+
+    public int getMediaPlayerCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    public int getMediaPlayerDuration() {
+        return mediaPlayer.getDuration();
+    }
+
+
 
 }

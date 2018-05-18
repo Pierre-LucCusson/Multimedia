@@ -14,4 +14,6 @@ public interface IMusicPlayer {
 
     void shuffle();
 
+    void seekTo(int mSec);
+
 }
