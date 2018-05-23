@@ -7,4 +7,6 @@
 
     <string name="server_start_error">Server could not start.</string>
     <string name="client_could_not_connect">Client could not connect to server.</string>
+    <string name="music_folder_not_created">The music folder was not able to be created. Please check your STORAGE PERMISSIONS.</string>
+    <string name="music_folder_empty">The music folder does not contain any audio file.</string>
 </resources>
