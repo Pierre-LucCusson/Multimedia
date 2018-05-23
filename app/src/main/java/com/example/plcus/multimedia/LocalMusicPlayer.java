@@ -10,7 +10,7 @@ public class LocalMusicPlayer extends MusicPlayer {
         playlist = new Playlist(activity);
 
         prepareMediaPlayer(playlist.getCurrentSong());
-        mediaPlayer.start();
+//        mediaPlayer.start();
     }
 
     @Override

@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView totalTimeText;
 
     private SeekBar timeSeekBar;
-
-
     private Handler timeSeekBarHandler = new Handler();
 
     @Override
@@ -140,6 +138,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 musicPlayer.playOrPause();
+                if(musicPlayer.isPlaying()) {
+                    playButton.setImageResource(android.R.drawable.ic_media_pause);
+                }
+                else {
+                    playButton.setImageResource(android.R.drawable.ic_media_play);
+                }
             }
         });
     }
@@ -199,16 +203,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setMusicPlayerToClient(){
+        musicPlayer.releaseMediaPlayer();
         musicPlayer = new ClientMusicPlayer();
         musicPlayer.initialise(this);
     }
 
     private void setMusicPlayerToLocal(){
+        musicPlayer.releaseMediaPlayer();
         musicPlayer = new LocalMusicPlayer();
         musicPlayer.initialise(this);
     }
 
     private void setMusicPlayerToServer(){
+        musicPlayer.releaseMediaPlayer();
         musicPlayer = new ServerMusicPlayer();
         musicPlayer.initialise(this);
     }

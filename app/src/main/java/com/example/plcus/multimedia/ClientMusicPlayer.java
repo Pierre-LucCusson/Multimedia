@@ -1,12 +1,14 @@
 package com.example.plcus.multimedia;
 
 import android.util.Log;
+import android.widget.Toast;
 
 public class ClientMusicPlayer extends MusicPlayer {
 
     @Override
     public void initialise(MainActivity activity) {
         this.activity = activity;
+        Toast.makeText(activity, R.string.client_could_not_connect, Toast.LENGTH_LONG).show();
     }
 
     @Override

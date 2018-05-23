@@ -4,4 +4,7 @@
     <string name="action_local">Play songs locally</string>
     <string name="action_client">Play songs from server</string>
     <string name="action_server">Play songs on server</string>
+
+    <string name="server_start_error">Server could not start.</string>
+    <string name="client_could_not_connect">Client could not connect to server.</string>
 </resources>

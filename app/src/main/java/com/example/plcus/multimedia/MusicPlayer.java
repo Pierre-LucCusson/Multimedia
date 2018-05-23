@@ -61,6 +61,13 @@ public abstract class MusicPlayer implements IMusicPlayer{
         return mediaPlayer == null;
     }
 
+    public boolean isPlaying() {
+        if(mediaPlayer != null) {
+            return mediaPlayer.isPlaying();
+        }
+        return false;
+    }
+
     public int getMediaPlayerCurrentPosition() {
         return mediaPlayer.getCurrentPosition();
     }
@@ -69,6 +76,12 @@ public abstract class MusicPlayer implements IMusicPlayer{
         return mediaPlayer.getDuration();
     }
 
-
+    public void releaseMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
 
 }
