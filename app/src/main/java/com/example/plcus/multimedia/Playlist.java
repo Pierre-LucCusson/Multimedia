@@ -30,6 +30,7 @@ public class Playlist {
     private void setDefaultSongPlaylist() {
         songs.clear();
         songs.add(new Song(activity, R.raw.good_life));
+        songs.add(new Song(activity, R.raw.cool_girl));
 
         File musicFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC) +
                 File.separator + activity.getResources().getString(R.string.app_name));
