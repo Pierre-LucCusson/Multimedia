@@ -39,7 +39,7 @@ public abstract class MusicPlayer implements IMusicPlayer{
             mediaPlayer.reset();
         }
 
-        mediaPlayer = MediaPlayer.create(activity, song.getId());
+        mediaPlayer = MediaPlayer.create(activity, song.getUri());
         mediaPlayer.setVolume(1,1);
         try {
             mediaPlayer.prepare();

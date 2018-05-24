@@ -224,6 +224,5 @@ public class MainActivity extends AppCompatActivity {
         songText.setText(song.getTitle());
         artistText.setText(song.getArtist());
         albumText.setText(song.getAlbum());
-        totalTimeText.setText(song.getLength());
     }
 }
