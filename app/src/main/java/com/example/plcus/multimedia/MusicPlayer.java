@@ -42,7 +42,7 @@ public abstract class MusicPlayer implements IMusicPlayer{
         mediaPlayer = MediaPlayer.create(activity, song.getUri());
         mediaPlayer.setVolume(1,1);
 
-        activity.updateTextFor(song);
+        activity.updateViewInformationFor(song);
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override

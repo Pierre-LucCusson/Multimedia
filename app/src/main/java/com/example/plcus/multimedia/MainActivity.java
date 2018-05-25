@@ -7,8 +7,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,6 +14,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -27,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton nextButton;
     private ImageButton shuffleButton;
     private ImageButton repeatButton;
+
+    private ImageView albumImageView;
 
     private TextView songText;
     private TextView artistText;
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
         progressionTimeText = findViewById(R.id.progressionTimeText);
         totalTimeText = findViewById(R.id.totalTimeText);
+
+        albumImageView = findViewById(R.id.albumImageView);
 
         if (playerService == null) {
             doBindService();
@@ -261,9 +264,16 @@ public class MainActivity extends AppCompatActivity {
         musicPlayer.initialise(this);
     }
 
-    public void updateTextFor(Song song) {
+    public void updateViewInformationFor(Song song) {
         songText.setText(song.getTitle());
         artistText.setText(song.getArtist());
         albumText.setText(song.getAlbum());
+
+        if (song.getAlbumImage() != null) {
+            albumImageView.setImageBitmap(song.getAlbumImage());
+        }
+        else{
+            albumImageView.setImageResource(android.R.drawable.sym_def_app_icon);
+        }
     }
 }
