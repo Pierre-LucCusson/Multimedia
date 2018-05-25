@@ -60,6 +60,7 @@ public class BackgroundPlayerService extends Service {
     @Override
     public void onDestroy() {
         musicPlayer.stop();
+        musicPlayer.releaseMediaPlayer();
     }
 
     @Override
