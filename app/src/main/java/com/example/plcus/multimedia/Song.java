@@ -4,31 +4,45 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 
+import java.io.File;
+
 class Song {
 
-    private int id;
+//    private int id;
+    private Uri uri;
     private String title;
     private String artist;
     private String album;
     private String length;
 
     public Song(AppCompatActivity activity, int id) {
+//        this.id = id;
+        this(activity, Uri.parse("android.resource://" + activity.getPackageName() + "/" + id));
+    }
 
-        this.id = id;
+    public Song(AppCompatActivity activity, File file) {
+        this(activity, Uri.fromFile(file));
+    }
+
+    public Song(AppCompatActivity activity, Uri uri) {
+
+        this.uri = uri;
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        Uri uri = Uri.parse("android.resource://" + activity.getPackageName() + "/" + id);
         retriever.setDataSource(activity, uri);
 
         title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
         artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
         album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
         length = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-
     }
 
-    public int getId() {
-        return id;
+//    public int getId() {
+//        return id;
+//    }
+
+    public Uri getUri() {
+        return uri;
     }
 
     public String getTitle() {
