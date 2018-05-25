@@ -77,14 +77,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        albumImageView = findViewById(R.id.albumImageView);
+
         songText = findViewById(R.id.songText);
         artistText = findViewById(R.id.artistText);
         albumText = findViewById(R.id.albumText);
 
         progressionTimeText = findViewById(R.id.progressionTimeText);
+        timeSeekBar = findViewById(R.id.timeSeekBar);
         totalTimeText = findViewById(R.id.totalTimeText);
 
-        albumImageView = findViewById(R.id.albumImageView);
+        previousButton = findViewById(R.id.previousButton);
+        nextButton = findViewById(R.id.nextButton);
+        stopButton = findViewById(R.id.stopButton);
+        playButton = findViewById(R.id.playButton);
+        repeatButton = findViewById(R.id.repeatButton);
+        shuffleButton = findViewById(R.id.shuffleButton);
 
         if (playerService == null) {
             doBindService();
@@ -136,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRepeatButton() {
-        repeatButton = findViewById(R.id.repeatButton);
         repeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initShuffleButton() {
-        shuffleButton = findViewById(R.id.shuffleButton);
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initNextButton() {
-        nextButton = findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initStopButton() {
-        stopButton = findViewById(R.id.stopButton);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPlayButton() {
-        playButton = findViewById(R.id.playButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPreviousButton() {
-        previousButton = findViewById(R.id.previousButton);
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -203,9 +205,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTimeSeekBar() {
-
-        timeSeekBar = findViewById(R.id.timeSeekBar);
-
         timeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean bool) {
@@ -230,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                if(!musicPlayer.isMediaPlayerNull()){
+                if(musicPlayer != null && !musicPlayer.isMediaPlayerNull()){
 
                     int currentTime = musicPlayer.getMediaPlayerCurrentPosition() / 1000;
                     int totalTime = musicPlayer.getMediaPlayerDuration() / 1000;
