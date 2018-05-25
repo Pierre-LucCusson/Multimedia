@@ -1,9 +1,17 @@
 package com.example.plcus.multimedia;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,8 +20,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-
-    private MusicPlayer musicPlayer;
 
     private ImageButton previousButton;
     private ImageButton playButton;
@@ -31,6 +37,38 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar timeSeekBar;
     private Handler timeSeekBarHandler = new Handler();
 
+    private BackgroundPlayerService playerService;
+    private MusicPlayer musicPlayer;
+
+
+    public ServiceConnection myConnection = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            playerService = ((BackgroundPlayerService.MyBinder) binder).getService();
+            Log.d("ServiceConnection","connected");
+            playerService.initialize(MainActivity.this, MusicPlayerType.LOCAL);
+            musicPlayer = playerService.getMusicPlayer();
+
+            initPreviousButton();
+            initPlayButton();
+            initStopButton();
+            initNextButton();
+            initShuffleButton();
+            initRepeatButton();
+            initTimeSeekBar();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            Log.d("ServiceConnection","disconnected");
+            playerService = null;
+        }
+    };
+
+    public void doBindService() {
+        Intent intent = new Intent(this, BackgroundPlayerService.class);
+        bindService(intent, myConnection, Context.BIND_AUTO_CREATE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,17 +83,19 @@ public class MainActivity extends AppCompatActivity {
         progressionTimeText = findViewById(R.id.progressionTimeText);
         totalTimeText = findViewById(R.id.totalTimeText);
 
-        musicPlayer = new LocalMusicPlayer();
-        musicPlayer.initialise(this);
+        if (playerService == null) {
+            doBindService();
+        }
+    }
 
-        initPreviousButton();
-        initPlayButton();
-        initStopButton();
-        initNextButton();
-        initShuffleButton();
-        initRepeatButton();
-        initTimeSeekBar();
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (playerService != null) {
+            unbindService(myConnection);
+            playerService = null;
+            musicPlayer = null;
+        }
     }
 
     @Override
@@ -128,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 musicPlayer.stop();
+                playButton.setImageResource(android.R.drawable.ic_media_play);
             }
         });
     }

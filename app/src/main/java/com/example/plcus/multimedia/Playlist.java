@@ -27,6 +27,7 @@ public class Playlist {
         File[] audioFiles = getAudioFiles();
         if(audioFiles.length == 0) {
             songs.add(new Song(activity, R.raw.good_life));
+            songs.add(new Song(activity, R.raw.cool_girl));
             Toast.makeText(activity, R.string.music_folder_empty, Toast.LENGTH_LONG).show();
         }
         else {
