@@ -32,7 +32,9 @@ public class Playlist {
         }
         else {
             for (File audioFile : audioFiles) {
-                songs.add(new Song(activity, audioFile));
+                if(audioFile.getName().toLowerCase().endsWith(".mp3")) {
+                    songs.add(new Song(activity, audioFile));
+                }
             }
         }
 
