@@ -1,12 +1,16 @@
 package com.example.plcus.multimedia;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.audiofx.Visualizer;
 
 public abstract class MusicPlayer implements IMusicPlayer{
 
     protected MainActivity activity;
     protected MediaPlayer mediaPlayer;
     protected Playlist playlist;
+
+    protected Visualizer visualizer;
 
     public abstract void  initialise(MainActivity activity);
 
@@ -34,7 +38,6 @@ public abstract class MusicPlayer implements IMusicPlayer{
     }
 
     protected void prepareMediaPlayer(Song song) {
-
         if(mediaPlayer != null) {
             mediaPlayer.reset();
         }
@@ -43,13 +46,37 @@ public abstract class MusicPlayer implements IMusicPlayer{
         mediaPlayer.setVolume(1,1);
 
         activity.updateViewInformationFor(song);
-
+        initialiseVisualizer();
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 playSong(playlist.getNextSong());
+                visualizer.setEnabled(false);
             }
         });
+    }
+
+    protected void initialiseVisualizer() {
+        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+        if (visualizer != null && visualizer.getEnabled()) {
+            visualizer.setEnabled(false);
+        }
+        visualizer = new Visualizer(mediaPlayer.getAudioSessionId());
+        visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+        visualizer.setDataCaptureListener(
+                new Visualizer.OnDataCaptureListener() {
+                    public void onWaveFormDataCapture(Visualizer visualizer,
+                                                      byte[] bytes, int samplingRate) {
+                        activity.updateVisualizer(bytes);
+                    }
+
+                    public void onFftDataCapture(Visualizer visualizer,
+                                                 byte[] bytes, int samplingRate) {
+                    }
+                }, Visualizer.getMaxCaptureRate() / 2, true, false);
+
+        visualizer.setEnabled(true);
     }
 
     public boolean isMediaPlayerNull() {
@@ -76,6 +103,11 @@ public abstract class MusicPlayer implements IMusicPlayer{
             mediaPlayer.pause();
             mediaPlayer.release();
             mediaPlayer = null;
+        }
+        if (visualizer != null) {
+            visualizer.setEnabled(false);
+            visualizer.release();
+            visualizer = null;
         }
     }
 

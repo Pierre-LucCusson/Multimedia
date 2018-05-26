@@ -18,9 +18,11 @@ public class LocalMusicPlayer extends MusicPlayer {
         Log.d(this.getClass().getName(), "playButtonClick");
         if(mediaPlayer.isPlaying()){
             mediaPlayer.pause();
+            visualizer.setEnabled(false);
         }
         else {
             mediaPlayer.start();
+            visualizer.setEnabled(true);
         }
     }
 
@@ -28,6 +30,7 @@ public class LocalMusicPlayer extends MusicPlayer {
     public void stop() {
         Log.d(this.getClass().getName(), "stopButtonClick");
         mediaPlayer.pause();
+        visualizer.setEnabled(false);
     }
 
     @Override

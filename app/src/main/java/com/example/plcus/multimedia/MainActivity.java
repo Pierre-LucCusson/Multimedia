@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton repeatButton;
 
     private ImageView albumImageView;
+    private VisualizerView visualizerView;
 
     private TextView songText;
     private TextView artistText;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         albumImageView = findViewById(R.id.albumImageView);
+        visualizerView = findViewById(R.id.visualizerView);
 
         songText = findViewById(R.id.songText);
         artistText = findViewById(R.id.artistText);
@@ -274,5 +276,9 @@ public class MainActivity extends AppCompatActivity {
         else{
             albumImageView.setImageResource(android.R.drawable.sym_def_app_icon);
         }
+    }
+
+    public void updateVisualizer(byte[] bytes) {
+        visualizerView.updateVisualizer(bytes);
     }
 }
