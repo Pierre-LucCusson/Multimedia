@@ -6,6 +6,7 @@
     android:layout_below="@+id/imageLayout"
     android:layout_above="@+id/timeLayout"
     android:orientation="horizontal"
+    android:background="@color/backgroundVisualizer"
     tools:showIn="@layout/content_main">
 
     <com.example.plcus.multimedia.VisualizerView
