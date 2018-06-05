@@ -58,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
             initShuffleButton();
             initRepeatButton();
             initTimeSeekBar();
+
+            ServerHTTPD serverHTTPD = new ServerHTTPD();
+            try {
+                serverHTTPD.start();
+            } catch(Exception e) {
+
+            }
         }
 
         public void onServiceDisconnected(ComponentName className) {

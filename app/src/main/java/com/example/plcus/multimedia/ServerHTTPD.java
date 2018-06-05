@@ -14,16 +14,15 @@ public class ServerHTTPD extends NanoHTTPD {
 
     @Override
     public Response serve(IHTTPSession session) {
-        String msg = "Hello, you have connected.";
-        try {
-            // Fetch JSON song files
-
-        } catch(Exception e) {
-            Log.w("Httpd", e.toString());
-        }
+        Response response;
+            response = newFixedLengthResponse("{testField:test}");
+            response.setMimeType("application/json");
 
 
-        return newFixedLengthResponse(msg);
+        //Allow CORS
+        response.addHeader("Access-Control-Allow-Origin","*");
+        response.addHeader("Access-Control-Allow-Headers","auth-user, auth-password");
+        return response;
     }
 }
 
