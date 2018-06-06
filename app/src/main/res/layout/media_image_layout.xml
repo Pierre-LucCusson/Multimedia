@@ -18,6 +18,14 @@
         app:srcCompat="@android:drawable/sym_def_app_icon" />
 
     <TextView
+        android:id="@+id/ipText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/white"/>
+
+    <TextView
         android:id="@+id/songText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
