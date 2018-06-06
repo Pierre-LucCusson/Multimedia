@@ -250,10 +250,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setMusicPlayerToClient(){
+    private void setMusicPlayerToClient() {
         musicPlayer.releaseMediaPlayer();
-        musicPlayer = new ClientMusicPlayer();
-        musicPlayer.initialise(this);
+        musicPlayer = new ClientMusicPlayer(this);
     }
 
     private void setMusicPlayerToLocal(){

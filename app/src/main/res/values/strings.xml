@@ -9,4 +9,8 @@
     <string name="client_could_not_connect">Client could not connect to server.</string>
     <string name="music_folder_not_created">The music folder was not able to be created. Please check your STORAGE PERMISSIONS.</string>
     <string name="music_folder_empty">The music folder does not contain any audio file.</string>
+
+    <string name="ip_address_required">"IP Address Required"</string>
+    <string name="ask_for_server_ip_address">"Please enter the IP Address of the server"</string>
+    <string name="default_server_ip_address">"localhost:8080"</string>
 </resources>

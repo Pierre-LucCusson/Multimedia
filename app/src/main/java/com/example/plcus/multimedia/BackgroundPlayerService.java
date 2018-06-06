@@ -47,7 +47,7 @@ public class BackgroundPlayerService extends Service {
                 musicPlayer = new LocalMusicPlayer();
                 break;
             case CLIENT:
-                musicPlayer = new ClientMusicPlayer();
+                musicPlayer = new ClientMusicPlayer(activity);
                 break;
             case SERVER:
                 musicPlayer = new ServerMusicPlayer();

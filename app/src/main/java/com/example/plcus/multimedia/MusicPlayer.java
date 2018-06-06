@@ -12,7 +12,7 @@ public abstract class MusicPlayer implements IMusicPlayer{
 
     protected Visualizer visualizer;
 
-    public abstract void  initialise(MainActivity activity);
+    protected abstract void initialise(MainActivity activity);
 
     public abstract void playOrPause();
 
