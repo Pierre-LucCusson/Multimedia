@@ -5,9 +5,20 @@ import android.widget.Toast;
 
 public class ServerMusicPlayer extends MusicPlayer {
 
+    private ServerHTTPD serverHTTPD;
+
     @Override
     public void initialise(MainActivity activity) {
         this.activity = activity;
+        playlist = new Playlist(activity);
+
+        serverHTTPD = new ServerHTTPD(playlist);
+        try {
+            serverHTTPD.start();
+        } catch(Exception e) {
+
+        }
+
         Toast.makeText(activity, R.string.server_start_error, Toast.LENGTH_LONG).show();
     }
 

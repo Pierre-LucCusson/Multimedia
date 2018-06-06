@@ -8,9 +8,7 @@ public class LocalMusicPlayer extends MusicPlayer {
     public void initialise(MainActivity activity) {
         this.activity = activity;
         playlist = new Playlist(activity);
-
         prepareMediaPlayer(playlist.getCurrentSong());
-//        mediaPlayer.start();
     }
 
     @Override

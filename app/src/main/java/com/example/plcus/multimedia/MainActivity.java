@@ -59,12 +59,6 @@ public class MainActivity extends AppCompatActivity {
             initRepeatButton();
             initTimeSeekBar();
 
-            ServerHTTPD serverHTTPD = new ServerHTTPD();
-            try {
-                serverHTTPD.start();
-            } catch(Exception e) {
-
-            }
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -175,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 musicPlayer.next();
+                playButton.setImageResource(android.R.drawable.ic_media_pause);
             }
         });
     }
@@ -209,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 musicPlayer.previous();
+                playButton.setImageResource(android.R.drawable.ic_media_pause);
             }
         });
     }

@@ -3,8 +3,12 @@ package com.example.plcus.multimedia;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,6 +25,12 @@ public class Playlist {
         songs = new ArrayList<>();
         setDefaultSongPlaylist();
     }
+
+//    public Playlist(String jsonPlaylist) {
+//        //TODO URI makes Gson crash
+//        songs = Arrays.asList(new Gson().fromJson(jsonPlaylist, Song[].class));
+//    }
+
     private void setDefaultSongPlaylist() {
         songs.clear();
 
@@ -76,6 +86,10 @@ public class Playlist {
 
     }
 
+    public String toJson() {
+        return new Gson().toJson(songs);
+    }
+
     private File[] getAudioFiles() {
         File musicFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC) +
                 File.separator + activity.getResources().getString(R.string.app_name));
@@ -91,4 +105,5 @@ public class Playlist {
             }
         }
     }
+
 }
