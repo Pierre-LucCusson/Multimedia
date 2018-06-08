@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     private BackgroundPlayerService playerService;
     private MusicPlayer musicPlayer;
+
+    private GestureDetector gestureDetector;
 
 
     public ServiceConnection myConnection = new ServiceConnection() {
@@ -144,6 +147,36 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                gestureDetector = new GestureDetector();
+                return true;
+
+            case MotionEvent.ACTION_MOVE:
+                gestureDetector.addPointX(event.getX());
+                return true;
+
+            case MotionEvent.ACTION_UP:
+                if(gestureDetector.isSwipeRight()) {
+                    musicPlayer.next();
+                    playButton.setImageResource(android.R.drawable.ic_media_pause);
+                }
+                else if(gestureDetector.isSwipeLeft()) {
+                    musicPlayer.previous();
+                    playButton.setImageResource(android.R.drawable.ic_media_pause);
+                }
+                return true;
+
+            default:
+                return super.onTouchEvent(event);
+
+        }
+
     }
 
     private void initRepeatButton() {
