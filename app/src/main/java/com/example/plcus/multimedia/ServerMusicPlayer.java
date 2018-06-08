@@ -7,7 +7,7 @@ import android.widget.Toast;
 public class ServerMusicPlayer extends MusicPlayer {
 
     private ServerHTTPD serverHTTPD;
-    private Boolean isStreaming = false;
+    private Boolean isStreaming = false; //TODO when true, we should stream to client, maybe we can add a stream command
 
     @Override
     public void initialise(MainActivity activity) {
@@ -81,7 +81,7 @@ public class ServerMusicPlayer extends MusicPlayer {
 //            ipText.setText(serverHTTPD.toString());
 //            InetAddress add = Inet4Address.getLocalHost();
 //            String ip = add.toString();
-            ipText.setText("I am Server");
+            ipText.setText("I am Server"); //TODO replace text with the ip address of server to help debug/test with other teams
 
         } catch(Exception e) {
             Toast.makeText(activity, R.string.server_start_error, Toast.LENGTH_LONG).show();

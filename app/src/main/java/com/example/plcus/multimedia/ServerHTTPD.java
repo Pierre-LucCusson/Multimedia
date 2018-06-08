@@ -46,11 +46,11 @@ public abstract class ServerHTTPD extends NanoHTTPD {
                     break;
                 case ServerCommand.LOOP:
                     Boolean isLooping = loopCommand();
-                    response = newFixedLengthResponse(ServerCommand.LOOP);
+                    response = newFixedLengthResponse(ServerCommand.LOOP); //TODO send isLooping to the client
                     break;
                 case ServerCommand.SHUFFLE:
                     Boolean isShuffled = shuffleCommand();
-                    response = newFixedLengthResponse(ServerCommand.SHUFFLE);
+                    response = newFixedLengthResponse(ServerCommand.SHUFFLE); //TODO send isShuffled to client
                     break;
                 case ServerCommand.SEEK:
                     seekToCommand(5000);

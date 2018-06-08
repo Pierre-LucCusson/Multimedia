@@ -180,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRepeatButton() {
+        //TODO button should be a toggle button instead of a click button
         repeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initShuffleButton() {
+        //TODO button should be a toggle button instead of a click button
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

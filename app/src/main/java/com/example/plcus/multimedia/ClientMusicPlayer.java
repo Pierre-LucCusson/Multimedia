@@ -19,6 +19,8 @@ public class ClientMusicPlayer extends MusicPlayer {
     @Override
     protected void initialise(MainActivity activity) {
         this.activity = activity;
+        //TODO client should also be able to stream music with a toggled button
+        //TODO the seek should position should be updated when song is playing
         new Thread(new Runnable(){
             @Override
             public void run() {
@@ -31,6 +33,7 @@ public class ClientMusicPlayer extends MusicPlayer {
     @Override
     public void playOrPause() {
         Log.d(this.getClass().getName(), "playButtonClick");
+        //TODO button image should change image when server sends for multiple command
         new Thread(new Runnable(){
             @Override
             public void run() {
@@ -82,6 +85,7 @@ public class ClientMusicPlayer extends MusicPlayer {
         new Thread(new Runnable(){
             @Override
             public void run() {
+                //TODO command should return a boolean and set mediaPlayer to looping
                 sendToServerCommand(ServerCommand.LOOP);
             }
         }).start();
@@ -93,6 +97,7 @@ public class ClientMusicPlayer extends MusicPlayer {
         new Thread(new Runnable(){
             @Override
             public void run() {
+                //TODO command should return a boolean and set mediaPlayer to isShuffled or not in playlist
                 sendToServerCommand(ServerCommand.SHUFFLE);
             }
         }).start();

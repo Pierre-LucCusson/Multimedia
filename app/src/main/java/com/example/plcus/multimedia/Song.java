@@ -13,7 +13,7 @@ import java.io.File;
 class Song {
 
 //    private int id;
-    private transient Uri uri;
+    private transient Uri uri; //TODO this field is ignored when converted toJson because is currently crash
     private String title;
     private String artist;
     private String album;

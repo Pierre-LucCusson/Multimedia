@@ -17,6 +17,7 @@ public class ClientHTTP {
 
     public String run(String url) throws IOException {
 
+        //TODO should not crash when serverIpAddress is not found or command is not found
         Request request = new Request.Builder()
                 .url(serverIpAddress + url)
                 .build();
