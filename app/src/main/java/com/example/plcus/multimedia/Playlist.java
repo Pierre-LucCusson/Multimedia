@@ -90,6 +90,10 @@ public class Playlist {
         return new Gson().toJson(songs);
     }
 
+    public Boolean isShuffled() {
+        return isShuffled;
+    }
+
     private File[] getAudioFiles() {
         File musicFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC) +
                 File.separator + activity.getResources().getString(R.string.app_name));

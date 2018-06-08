@@ -2,15 +2,11 @@ package com.example.plcus.multimedia;
 
 import fi.iki.elonen.NanoHTTPD;
 
-// Ref. : https://stackoverflow.com/questions/14309256/using-nanohttpd-in-android
 public abstract class ServerHTTPD extends NanoHTTPD {
 
-    private Playlist playlist;
-
-    public ServerHTTPD(Playlist playlist)
+    public ServerHTTPD()
     {
         super(8080);
-        this.playlist = playlist;
     }
 
     @Override
@@ -21,42 +17,47 @@ public abstract class ServerHTTPD extends NanoHTTPD {
             String uri = session.getUri();
             String command = getCommand(uri);
 
+            Song currentSong;
+
             switch (getCommand(uri)) {
                 case ServerCommand.PLAY_OR_PAUSE:
-                    playOrPauseCommand();
-                    response = newFixedLengthResponse(ServerCommand.PLAY_OR_PAUSE);
+                    currentSong = playOrPauseCommand();
+                    response = newFixedLengthResponse(currentSong.toJson());
                     break;
                 case ServerCommand.PLAY:
-                    playCommand();
-                    response = newFixedLengthResponse(ServerCommand.PLAY);
+                    currentSong = playCommand();
+                    response = newFixedLengthResponse(currentSong.toJson());
                     break;
                 case ServerCommand.PAUSE:
-                    pauseCommand();
-                    response = newFixedLengthResponse(ServerCommand.PAUSE);
+                    currentSong = pauseCommand();
+                    response = newFixedLengthResponse(currentSong.toJson());
                     break;
                 case ServerCommand.STOP:
-                    stopCommand();
-                    response = newFixedLengthResponse(ServerCommand.STOP);
+                    currentSong = stopCommand();
+                    response = newFixedLengthResponse(currentSong.toJson());
                     break;
                 case ServerCommand.PREVIOUS:
-                    previousCommand();
-                    response = newFixedLengthResponse(ServerCommand.PREVIOUS);
+                    currentSong = previousCommand();
+                    response = newFixedLengthResponse(currentSong.toJson());
                     break;
                 case ServerCommand.NEXT:
-                    nextCommand();
-                    response = newFixedLengthResponse(ServerCommand.NEXT);
+                    currentSong = nextCommand();
+                    response = newFixedLengthResponse(currentSong.toJson());
                     break;
                 case ServerCommand.LOOP:
-                    loopCommand();
+                    Boolean isLooping = loopCommand();
                     response = newFixedLengthResponse(ServerCommand.LOOP);
                     break;
                 case ServerCommand.SHUFFLE:
-                    shuffleCommand();
+                    Boolean isShuffled = shuffleCommand();
                     response = newFixedLengthResponse(ServerCommand.SHUFFLE);
                     break;
                 case ServerCommand.SEEK:
                     seekToCommand(5000);
                     response = newFixedLengthResponse(ServerCommand.SEEK);
+                    break;
+                case ServerCommand.SONG:
+                    response = newFixedLengthResponse(getCurrentSong().toJson());
                     break;
                 default:
                     response = newFixedLengthResponse(command + " " + ServerCommand.DOES_NOT_EXIST);
@@ -85,22 +86,24 @@ public abstract class ServerHTTPD extends NanoHTTPD {
         return "/null";
     }
 
-    public abstract void playOrPauseCommand();
+    public abstract Song playOrPauseCommand();
 
-    public abstract void playCommand();
+    public abstract Song playCommand();
 
-    public abstract void pauseCommand();
+    public abstract Song pauseCommand();
 
-    public abstract void stopCommand();
+    public abstract Song stopCommand();
 
-    public abstract void previousCommand();
+    public abstract Song previousCommand();
 
-    public abstract void nextCommand();
+    public abstract Song nextCommand();
 
-    public abstract void loopCommand();
+    public abstract Boolean loopCommand();
 
-    public abstract void shuffleCommand();
+    public abstract Boolean shuffleCommand();
 
     public abstract void seekToCommand(int mSec);
+
+    public abstract Song getCurrentSong();
 }
 

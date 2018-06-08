@@ -11,6 +11,7 @@ public final class ServerCommand {
     public static final String LOOP = "/loop";
     public static final String SHUFFLE = "/shuffle";
     public static final String SEEK = "/seek";
+    public static final String SONG = "/song";
     public static final String DOES_NOT_EXIST = "/command_does_not_exist";
 
 }

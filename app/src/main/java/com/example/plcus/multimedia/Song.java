@@ -6,12 +6,14 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+
 import java.io.File;
 
 class Song {
 
 //    private int id;
-    private Uri uri;
+    private transient Uri uri;
     private String title;
     private String artist;
     private String album;
@@ -45,6 +47,10 @@ class Song {
         }
 
         retriever.release();
+    }
+
+    public String toJson() {
+        return new Gson().toJson(this);
     }
 
 //    public int getId() {

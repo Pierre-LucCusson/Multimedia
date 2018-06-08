@@ -15,57 +15,74 @@ public class ServerMusicPlayer extends MusicPlayer {
         playlist = new Playlist(activity);
         prepareMediaPlayer(playlist.getCurrentSong());
 
-        serverHTTPD = new ServerHTTPD(playlist) {
+        serverHTTPD = new ServerHTTPD() {
             @Override
-            public void playOrPauseCommand() {
+            public Song playOrPauseCommand() {
                 playOrPause();
+                return playlist.getCurrentSong();
             }
 
             @Override
-            public void playCommand() {
+            public Song playCommand() {
                 play();
+                return playlist.getCurrentSong();
             }
 
             @Override
-            public void pauseCommand() {
+            public Song pauseCommand() {
                 pause();
+                return playlist.getCurrentSong();
             }
 
             @Override
-            public void stopCommand() {
+            public Song stopCommand() {
                 pause();
+                return playlist.getCurrentSong();
             }
 
             @Override
-            public void previousCommand() {
+            public Song previousCommand() {
                 previous();
+                return playlist.getCurrentSong();
             }
 
             @Override
-            public void nextCommand() {
+            public Song nextCommand() {
                 next();
+                return playlist.getCurrentSong();
             }
 
             @Override
-            public void loopCommand() {
+            public Boolean loopCommand() {
                 repeat();
+                return mediaPlayer.isLooping();
             }
 
             @Override
-            public void shuffleCommand() {
+            public Boolean shuffleCommand() {
                 shuffle();
+                return playlist.isShuffled();
             }
 
             @Override
             public void seekToCommand(int mSec) {
                 seekTo(mSec);
             }
+
+            @Override
+            public Song getCurrentSong() {
+                return playlist.getCurrentSong();
+            }
         };
 
         try {
             serverHTTPD.start();
             TextView ipText = activity.findViewById(R.id.ipText);
-            ipText.setText(serverHTTPD.toString());
+//            ipText.setText(serverHTTPD.toString());
+//            InetAddress add = Inet4Address.getLocalHost();
+//            String ip = add.toString();
+            ipText.setText("I am Server");
+
         } catch(Exception e) {
             Toast.makeText(activity, R.string.server_start_error, Toast.LENGTH_LONG).show();
         }

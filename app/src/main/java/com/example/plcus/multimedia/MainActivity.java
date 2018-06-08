@@ -267,17 +267,22 @@ public class MainActivity extends AppCompatActivity {
         musicPlayer.initialise(this);
     }
 
-    public void updateViewInformationFor(Song song) {
-        songText.setText(song.getTitle());
-        artistText.setText(song.getArtist());
-        albumText.setText(song.getAlbum());
+    public void updateViewInformationFor(final Song song) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                songText.setText(song.getTitle());
+                artistText.setText(song.getArtist());
+                albumText.setText(song.getAlbum());
 
-        if (song.getAlbumImage() != null) {
-            albumImageView.setImageBitmap(song.getAlbumImage());
-        }
-        else{
-            albumImageView.setImageResource(android.R.drawable.sym_def_app_icon);
-        }
+                if (song.getAlbumImage() != null) {
+                    albumImageView.setImageBitmap(song.getAlbumImage());
+                }
+                else{
+                    albumImageView.setImageResource(android.R.drawable.sym_def_app_icon);
+                }
+            }
+        });
     }
 
     public void updateVisualizer(byte[] bytes) {
