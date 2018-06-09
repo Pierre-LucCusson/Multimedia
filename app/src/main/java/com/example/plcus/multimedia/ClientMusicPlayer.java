@@ -2,15 +2,22 @@ package com.example.plcus.multimedia;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 import java.io.IOException;
 
 public class ClientMusicPlayer extends MusicPlayer {
 
     private ClientHTTP client;
+    private String serverIpAddress;
+    private Boolean isStreaming;
+    private Song songStreaming;
 
     public ClientMusicPlayer(MainActivity activity) {
         askForServerIpAddress(activity);
@@ -21,6 +28,7 @@ public class ClientMusicPlayer extends MusicPlayer {
         this.activity = activity;
         //TODO client should also be able to stream music with a toggled button
         //TODO the seek should position should be updated when song is playing
+        isStreaming = false;
         new Thread(new Runnable(){
             @Override
             public void run() {
@@ -28,6 +36,53 @@ public class ClientMusicPlayer extends MusicPlayer {
                 updateViewInformationFor(jsonSong);
             }
         }).start();
+    }
+
+    private void initialiseMusicPlayerForStreaming(final String serverCommand) {
+        releaseMediaPlayer();
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                String jsonSong = sendToServerCommand(serverCommand);
+                songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                prepareMediaPlayer(songStreaming);
+
+            }
+        }).start();
+    }
+
+    @Override
+    public void prepareMediaPlayer(Song song) {
+        if(mediaPlayer != null) {
+            mediaPlayer.reset();
+        }
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        try {
+
+            String url = "http://" + serverIpAddress + song.getPath();
+
+            mediaPlayer.setDataSource(url);
+            mediaPlayer.prepare(); //TODO this line crash probably because the url is not good
+
+            mediaPlayer.setVolume(1,1);
+
+            activity.updateViewInformationFor(song);
+            initialiseVisualizer();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    playSong(songStreaming);
+                    visualizer.setEnabled(false);
+                }
+            });
+        }
+        catch (Exception e) {
+            isStreaming = false;
+            visualizer.setEnabled(false);
+            Toast.makeText(activity, R.string.could_not_stream, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -38,7 +93,18 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.PLAY_OR_PAUSE);
-                updateViewInformationFor(jsonSong);
+                songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                activity.updateViewInformationFor(songStreaming);
+                if (isStreaming) {
+                    if(mediaPlayer.isPlaying()){
+                        mediaPlayer.pause();
+                        visualizer.setEnabled(false);
+                    }
+                    else {
+                        mediaPlayer.start();
+                        visualizer.setEnabled(true);
+                    }
+                }
             }
         }).start();
     }
@@ -50,7 +116,12 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.STOP);
-                updateViewInformationFor(jsonSong);
+                songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                activity.updateViewInformationFor(songStreaming);
+                if (isStreaming) {
+                    mediaPlayer.pause();
+                    visualizer.setEnabled(false);
+                }
             }
         }).start();
     }
@@ -62,7 +133,11 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.PREVIOUS);
-                updateViewInformationFor(jsonSong);
+                songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                activity.updateViewInformationFor(songStreaming);
+                if (isStreaming) {
+                    playSong(songStreaming);
+                }
             }
         }).start();
     }
@@ -74,7 +149,11 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.NEXT);
-                updateViewInformationFor(jsonSong);
+                songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                activity.updateViewInformationFor(songStreaming);
+                if (isStreaming) {
+                    playSong(songStreaming);
+                }
             }
         }).start();
     }
@@ -85,8 +164,10 @@ public class ClientMusicPlayer extends MusicPlayer {
         new Thread(new Runnable(){
             @Override
             public void run() {
-                //TODO command should return a boolean and set mediaPlayer to looping
-                sendToServerCommand(ServerCommand.LOOP);
+                Boolean isLooping = Boolean.valueOf(sendToServerCommand(ServerCommand.LOOP));
+                if (isStreaming) {
+                    mediaPlayer.setLooping(isLooping);
+                }
             }
         }).start();
     }
@@ -97,8 +178,24 @@ public class ClientMusicPlayer extends MusicPlayer {
         new Thread(new Runnable(){
             @Override
             public void run() {
-                //TODO command should return a boolean and set mediaPlayer to isShuffled or not in playlist
-                sendToServerCommand(ServerCommand.SHUFFLE);
+                Boolean isShuffled = Boolean.valueOf(sendToServerCommand(ServerCommand.SHUFFLE));
+            }
+        }).start();
+    }
+
+    @Override
+    public void toggleStreamMusicState() {
+        Log.d(this.getClass().getName(), "shuffleButtonClick");
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                isStreaming = Boolean.valueOf(sendToServerCommand(ServerCommand.STREAM));
+                if(isStreaming) {
+                    initialiseMusicPlayerForStreaming(ServerCommand.SONG);
+                }
+                else {
+                    releaseMediaPlayer();
+                }
             }
         }).start();
     }
@@ -114,7 +211,7 @@ public class ClientMusicPlayer extends MusicPlayer {
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, activity.getResources().getString(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        String serverIpAddress = editText.getText().toString();
+                        serverIpAddress = editText.getText().toString();
                         client = new ClientHTTP(serverIpAddress);
                         initialise(activity);
                         dialog.dismiss();

@@ -1,6 +1,7 @@
 package com.example.plcus.multimedia;
 
 import android.util.Log;
+import android.widget.Toast;
 
 public class LocalMusicPlayer extends MusicPlayer {
 
@@ -59,6 +60,11 @@ public class LocalMusicPlayer extends MusicPlayer {
     public void shuffle() {
         Log.d(this.getClass().getName(), "shuffleButtonClick");
         playlist.shuffle();
+    }
+
+    @Override
+    public void toggleStreamMusicState() {
+        Toast.makeText(activity, R.string.not_supported_for_LocalMusicPlayer, Toast.LENGTH_SHORT).show();
     }
 
 }

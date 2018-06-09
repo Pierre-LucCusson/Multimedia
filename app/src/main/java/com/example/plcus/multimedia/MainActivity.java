@@ -133,6 +133,10 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        else if (id == R.id.action_stream) {
+            streamMusic();
+            return true;
+        }
         else if (id == R.id.action_local) {
             setMusicPlayerToLocal();
             return true;
@@ -283,6 +287,10 @@ public class MainActivity extends AppCompatActivity {
                 timeSeekBarHandler.postDelayed(this, 1000);
             }
         });
+    }
+
+    private void streamMusic() {
+        musicPlayer.toggleStreamMusicState();
     }
 
     private void setMusicPlayerToClient() {

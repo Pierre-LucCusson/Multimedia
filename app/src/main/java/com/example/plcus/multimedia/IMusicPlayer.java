@@ -16,4 +16,6 @@ public interface IMusicPlayer {
 
     void seekTo(int mSec);
 
+    void toggleStreamMusicState();
+
 }

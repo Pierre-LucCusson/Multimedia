@@ -46,18 +46,22 @@ public abstract class ServerHTTPD extends NanoHTTPD {
                     break;
                 case ServerCommand.LOOP:
                     Boolean isLooping = loopCommand();
-                    response = newFixedLengthResponse(ServerCommand.LOOP); //TODO send isLooping to the client
+                    response = newFixedLengthResponse(new Boolean(isLooping).toString());
                     break;
                 case ServerCommand.SHUFFLE:
                     Boolean isShuffled = shuffleCommand();
-                    response = newFixedLengthResponse(ServerCommand.SHUFFLE); //TODO send isShuffled to client
+                    response = newFixedLengthResponse(new Boolean(isShuffled).toString());
                     break;
                 case ServerCommand.SEEK:
                     seekToCommand(5000);
                     response = newFixedLengthResponse(ServerCommand.SEEK);
                     break;
                 case ServerCommand.SONG:
-                    response = newFixedLengthResponse(getCurrentSong().toJson());
+                    response = newFixedLengthResponse(getCurrentSongCommand().toJson());
+                    break;
+                case ServerCommand.STREAM:
+                    Boolean isStreaming = toggleStreamMusicCommand();
+                    response = newFixedLengthResponse(new Boolean(isStreaming).toString());
                     break;
                 default:
                     response = newFixedLengthResponse(command + " " + ServerCommand.DOES_NOT_EXIST);
@@ -104,6 +108,8 @@ public abstract class ServerHTTPD extends NanoHTTPD {
 
     public abstract void seekToCommand(int mSec);
 
-    public abstract Song getCurrentSong();
+    public abstract Song getCurrentSongCommand();
+
+    public abstract Boolean toggleStreamMusicCommand();
 }
 

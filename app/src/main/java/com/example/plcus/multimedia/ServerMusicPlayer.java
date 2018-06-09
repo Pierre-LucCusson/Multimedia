@@ -1,13 +1,17 @@
 package com.example.plcus.multimedia;
 
+import android.net.wifi.WifiManager;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static android.content.Context.WIFI_SERVICE;
+
 public class ServerMusicPlayer extends MusicPlayer {
 
     private ServerHTTPD serverHTTPD;
-    private Boolean isStreaming = false; //TODO when true, we should stream to client, maybe we can add a stream command
+    private Boolean isStreaming = false;
 
     @Override
     public void initialise(MainActivity activity) {
@@ -69,22 +73,35 @@ public class ServerMusicPlayer extends MusicPlayer {
                 seekTo(mSec);
             }
 
+
             @Override
-            public Song getCurrentSong() {
+            public Song getCurrentSongCommand() {
                 return playlist.getCurrentSong();
+            }
+
+            @Override
+            public Boolean toggleStreamMusicCommand() {
+                toggleStreamMusicState();
+                return isStreaming;
             }
         };
 
         try {
             serverHTTPD.start();
-            TextView ipText = activity.findViewById(R.id.ipText);
-//            ipText.setText(serverHTTPD.toString());
-//            InetAddress add = Inet4Address.getLocalHost();
-//            String ip = add.toString();
-            ipText.setText("I am Server"); //TODO replace text with the ip address of server to help debug/test with other teams
-
+            setIpAddressToIpTextView();
         } catch(Exception e) {
             Toast.makeText(activity, R.string.server_start_error, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void setIpAddressToIpTextView() {
+        try {
+            TextView ipText = activity.findViewById(R.id.ipText);
+            WifiManager wifiManager = (WifiManager) activity.getApplicationContext().getSystemService(WIFI_SERVICE);
+            String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
+            ipText.setText(ipAddress);
+        } catch (Exception e) {
+            Toast.makeText(activity, R.string.permission_access_network_state_is_required, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -141,6 +158,17 @@ public class ServerMusicPlayer extends MusicPlayer {
         Log.d(this.getClass().getName(), "shuffleButtonClick");
         if(!isStreaming) {
             playlist.shuffle();
+        }
+    }
+
+    @Override
+    public void toggleStreamMusicState() {
+        isStreaming = !isStreaming;
+        if (isStreaming) {
+            releaseMediaPlayer();
+        }
+        else {
+            prepareMediaPlayer(playlist.getCurrentSong());
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.plcus.multimedia;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Path;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,8 @@ class Song {
     private String album;
     private String length;
     private Bitmap albumImage;
+    private String path;
+    private String mime;
 
     public Song(AppCompatActivity activity, int id) {
 //        this.id = id;
@@ -32,6 +35,7 @@ class Song {
     public Song(AppCompatActivity activity, Uri uri) {
 
         this.uri = uri;
+        path = uri.getPath();
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(activity, uri);
@@ -40,6 +44,7 @@ class Song {
         artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
         album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
         length = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        mime = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
 
         byte[] picture = retriever.getEmbeddedPicture();
         if( picture != null ){
@@ -79,5 +84,13 @@ class Song {
 
     public Bitmap getAlbumImage() {
         return albumImage;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getMime() {
+        return mime;
     }
 }

@@ -78,12 +78,19 @@ public class Playlist {
     public void shuffle() {
         if(isShuffled) {
             setDefaultSongPlaylist();
+            isShuffled = false;
         }
         else {
             Collections.shuffle(songs);
             indexOfSongPlaying = 0;
+            isShuffled = true;
         }
+    }
 
+    public void setShuffle(Boolean isShuffled) {
+        if (this.isShuffled != isShuffled) {
+            shuffle();
+        }
     }
 
     public String toJson() {

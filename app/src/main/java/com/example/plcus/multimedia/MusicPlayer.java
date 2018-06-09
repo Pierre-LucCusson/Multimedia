@@ -26,6 +26,8 @@ public abstract class MusicPlayer implements IMusicPlayer{
 
     public abstract void shuffle();
 
+    public abstract void toggleStreamMusicState();
+
     public void seekTo(int mSec) {
         if (mediaPlayer != null) {
             mediaPlayer.seekTo(mSec);
