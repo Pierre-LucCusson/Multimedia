@@ -102,7 +102,9 @@ public abstract class MusicPlayer implements IMusicPlayer{
 
     public void releaseMediaPlayer() {
         if (mediaPlayer != null) {
-            mediaPlayer.pause();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+            }
             mediaPlayer.release();
             mediaPlayer = null;
         }

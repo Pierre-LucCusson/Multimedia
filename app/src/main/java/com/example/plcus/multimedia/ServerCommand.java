@@ -2,7 +2,6 @@ package com.example.plcus.multimedia;
 
 public final class ServerCommand {
 
-    //TODO validate with other team that we have the same command
     public static final String PLAY_OR_PAUSE = "/playorpause";
     public static final String PLAY = "/play";
     public static final String PAUSE = "/pause";
