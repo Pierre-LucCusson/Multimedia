@@ -1,18 +1,25 @@
 package com.example.plcus.multimedia;
 
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+
 import fi.iki.elonen.NanoHTTPD;
 
 public abstract class ServerHTTPD extends NanoHTTPD {
 
-    public ServerHTTPD()
+    private AssetManager assetManager;
+
+    public ServerHTTPD(AssetManager assetManager)
     {
         super(8080);
+        this.assetManager = assetManager;
+
     }
 
     @Override
     public Response serve(IHTTPSession session) {
 
-        Response response;
+        Response response = null;
         if (session.getMethod() == Method.GET) {
             String uri = session.getUri();
             String command = getCommand(uri);
@@ -22,11 +29,23 @@ public abstract class ServerHTTPD extends NanoHTTPD {
             switch (getCommand(uri)) {
                 case ServerCommand.PLAY_OR_PAUSE:
                     currentSong = playOrPauseCommand();
-                    response = newFixedLengthResponse(currentSong.toJson());
+                    //response = newFixedLengthResponse(currentSong.toJson());
+                    try {
+                        AssetFileDescriptor fileDescriptor = assetManager.openFd("cool_girl.mp3");
+                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", fileDescriptor.createInputStream(), fileDescriptor.getLength());
+                    } catch (Exception e) {
+
+                    }
                     break;
                 case ServerCommand.PLAY:
                     currentSong = playCommand();
-                    response = newFixedLengthResponse(currentSong.toJson());
+                    //response = newFixedLengthResponse(currentSong.toJson());
+                    try {
+                        AssetFileDescriptor fileDescriptor = assetManager.openFd("cool_girl");
+                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", fileDescriptor.createInputStream(), fileDescriptor.getLength());
+                    } catch (Exception e) {
+
+                    }
                     break;
                 case ServerCommand.PAUSE:
                     currentSong = pauseCommand();
@@ -72,7 +91,7 @@ public abstract class ServerHTTPD extends NanoHTTPD {
             response = newFixedLengthResponse(ServerCommand.DOES_NOT_EXIST);
         }
 
-        response.setMimeType("application/json");
+        //response.setMimeType("application/json");
 
 
         //Allow CORS

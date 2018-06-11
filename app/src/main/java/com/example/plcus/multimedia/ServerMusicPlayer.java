@@ -19,7 +19,7 @@ public class ServerMusicPlayer extends MusicPlayer {
         playlist = new Playlist(activity);
         prepareMediaPlayer(playlist.getCurrentSong());
 
-        serverHTTPD = new ServerHTTPD() {
+        serverHTTPD = new ServerHTTPD(activity.getAssets()) {
             @Override
             public Song playOrPauseCommand() {
                 playOrPause();
