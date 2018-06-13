@@ -15,9 +15,8 @@ public class ClientHTTP {
 
     OkHttpClient client = new OkHttpClient();
 
-    public String run(String url) throws IOException {
+    public String run(String url) {
 
-        //TODO should not crash when serverIpAddress is not found or command is not found
         Request request = new Request.Builder()
                 .url(serverIpAddress + url)
                 .build();

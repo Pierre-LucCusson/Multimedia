@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import java.io.IOException;
 
 public class ClientMusicPlayer extends MusicPlayer {
 
@@ -29,9 +28,7 @@ public class ClientMusicPlayer extends MusicPlayer {
     protected void initialise(MainActivity activity) {
         this.activity = activity;
 
-        streamingText = activity.findViewById(R.id.streamingText);
-        streamingText.setText(R.string.mode_command);
-        preparingText = activity.findViewById(R.id.preparingText);
+        updateMode(R.string.connecting);
 
         //TODO client should also be able to stream music with a toggled button
         //TODO the seek should position should be updated when song is playing
@@ -40,9 +37,29 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.SONG);
-                updateViewInformationFor(jsonSong);
+                if( checkResponse(jsonSong) ) {
+                    updateViewInformationFor(jsonSong);
+                    updateMode(R.string.mode_command);
+                }
+                else
+                {
+                    updateMode(R.string.not_connected);
+                }
             }
         }).start();
+    }
+
+    private boolean checkResponse(String json)
+    {
+        boolean connected = true;
+
+        if( json == null )
+        {
+            displayMessage(R.string.not_connected);
+            connected = false;
+        }
+
+        return connected;
     }
 
     private void initialiseMusicPlayerForStreaming(final String serverCommand) {
@@ -51,9 +68,10 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(serverCommand);
-                songStreaming = new Gson().fromJson(jsonSong, Song.class);
-                prepareMediaPlayer(songStreaming);
-
+                if( checkResponse(jsonSong) ) {
+                    songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                    prepareMediaPlayer(songStreaming);
+                }
             }
         }).start();
     }
@@ -110,16 +128,17 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.PLAY_OR_PAUSE);
-                songStreaming = new Gson().fromJson(jsonSong, Song.class);
-                activity.updateViewInformationFor(songStreaming);
-                if (isStreaming) {
-                    if(mediaPlayer.isPlaying()){
-                        mediaPlayer.pause();
-                        visualizer.setEnabled(false);
-                    }
-                    else {
-                        mediaPlayer.start();
-                        visualizer.setEnabled(true);
+                if( checkResponse(jsonSong) ) {
+                    songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                    activity.updateViewInformationFor(songStreaming);
+                    if (isStreaming) {
+                        if (mediaPlayer.isPlaying()) {
+                            mediaPlayer.pause();
+                            visualizer.setEnabled(false);
+                        } else {
+                            mediaPlayer.start();
+                            visualizer.setEnabled(true);
+                        }
                     }
                 }
             }
@@ -133,11 +152,13 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.STOP);
-                songStreaming = new Gson().fromJson(jsonSong, Song.class);
-                activity.updateViewInformationFor(songStreaming);
-                if (isStreaming) {
-                    mediaPlayer.pause();
-                    visualizer.setEnabled(false);
+                if( checkResponse(jsonSong) ) {
+                    songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                    activity.updateViewInformationFor(songStreaming);
+                    if (isStreaming) {
+                        mediaPlayer.pause();
+                        visualizer.setEnabled(false);
+                    }
                 }
             }
         }).start();
@@ -150,10 +171,12 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.PREVIOUS);
-                songStreaming = new Gson().fromJson(jsonSong, Song.class);
-                activity.updateViewInformationFor(songStreaming);
-                if (isStreaming) {
-                    playSong(songStreaming);
+                if( checkResponse(jsonSong) ) {
+                    songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                    activity.updateViewInformationFor(songStreaming);
+                    if (isStreaming) {
+                        playSong(songStreaming);
+                    }
                 }
             }
         }).start();
@@ -166,10 +189,12 @@ public class ClientMusicPlayer extends MusicPlayer {
             @Override
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.NEXT);
-                songStreaming = new Gson().fromJson(jsonSong, Song.class);
-                activity.updateViewInformationFor(songStreaming);
-                if (isStreaming) {
-                    playSong(songStreaming);
+                if( checkResponse(jsonSong) ) {
+                    songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                    activity.updateViewInformationFor(songStreaming);
+                    if (isStreaming) {
+                        playSong(songStreaming);
+                    }
                 }
             }
         }).start();
@@ -195,7 +220,11 @@ public class ClientMusicPlayer extends MusicPlayer {
         new Thread(new Runnable(){
             @Override
             public void run() {
-                Boolean isShuffled = Boolean.valueOf(sendToServerCommand(ServerCommand.SHUFFLE));
+                String response = sendToServerCommand(ServerCommand.SHUFFLE);
+                if( checkResponse(response) )
+                {
+                    Boolean isShuffled = Boolean.valueOf(response);
+                }
             }
         }).start();
     }
@@ -245,14 +274,30 @@ public class ClientMusicPlayer extends MusicPlayer {
         alertDialog.show();
     }
 
+    private void displayMessage(final int message)
+    {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                final Toast toast = Toast.makeText(activity, message, Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+    }
+
     private String sendToServerCommand(String command)
     {
-        try {
-            return client.run(command);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return client.run(command);
+    }
+
+    private void updateMode(final int mode)
+    {
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                streamingText = activity.findViewById(R.id.streamingText);
+                streamingText.setText(mode);
+                preparingText = activity.findViewById(R.id.preparingText);
+            }
+        });
     }
 
     private void updateViewInformationFor(String jsonSong) {
