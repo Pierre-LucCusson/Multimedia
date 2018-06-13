@@ -17,4 +17,9 @@
     <string name="permission_access_network_state_is_required">Please accept permission ACCESS_NETWORK_STATE.</string>
     <string name="not_supported_for_LocalMusicPlayer">Streaming is not supported for LocalMusicPlayer</string>
     <string name="could_not_stream">Could not prepare for streaming</string>
+    <string name="mode_streaming">In Streaming Mode</string>
+    <string name="mode_server_local">Server In Local Mode</string>
+    <string name="mode_command">In Mode Command</string>
+    <string name="preparing_song">Preparing Song ....</string>
+    <string name="preparing_song_done">Song Is Ready !!!</string>
 </resources>

@@ -26,6 +26,22 @@
         android:textColor="@color/white"/>
 
     <TextView
+        android:id="@+id/streamingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/ipText"
+        android:textColor="@color/white"/>
+
+    <TextView
+        android:id="@+id/preparingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/streamingText"
+        android:textColor="@color/white"/>
+
+    <TextView
         android:id="@+id/songText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

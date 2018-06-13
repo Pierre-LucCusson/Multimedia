@@ -6,16 +6,25 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.InputStream;
+
 import static android.content.Context.WIFI_SERVICE;
 
 public class ServerMusicPlayer extends MusicPlayer {
 
     private ServerHTTPD serverHTTPD;
     private Boolean isStreaming = false;
+    private TextView streamingText;
+    private TextView preparingText;
 
     @Override
     public void initialise(MainActivity activity) {
         this.activity = activity;
+
+        streamingText = activity.findViewById(R.id.streamingText);
+        streamingText.setText(R.string.mode_server_local);
+        preparingText = activity.findViewById(R.id.preparingText);
+
         playlist = new Playlist(activity);
         prepareMediaPlayer(playlist.getCurrentSong());
 
@@ -73,6 +82,10 @@ public class ServerMusicPlayer extends MusicPlayer {
                 seekTo(mSec);
             }
 
+            @Override
+            public InputStream inputStreamCommand() {
+                return playlist.getCurrentSong().getInputStream();
+            }
 
             @Override
             public Song getCurrentSongCommand() {
@@ -165,9 +178,11 @@ public class ServerMusicPlayer extends MusicPlayer {
     public void toggleStreamMusicState() {
         isStreaming = !isStreaming;
         if (isStreaming) {
+            activity.updateStreamingText(R.string.mode_streaming);
             releaseMediaPlayer();
         }
         else {
+            activity.updateStreamingText(R.string.mode_server_local);
             prepareMediaPlayer(playlist.getCurrentSong());
         }
     }

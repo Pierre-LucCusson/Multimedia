@@ -1,7 +1,8 @@
 package com.example.plcus.multimedia;
 
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import java.io.FileDescriptor;
+import java.io.InputStream;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -29,23 +30,11 @@ public abstract class ServerHTTPD extends NanoHTTPD {
             switch (getCommand(uri)) {
                 case ServerCommand.PLAY_OR_PAUSE:
                     currentSong = playOrPauseCommand();
-                    //response = newFixedLengthResponse(currentSong.toJson());
-                    try {
-                        AssetFileDescriptor fileDescriptor = assetManager.openFd("cool_girl.mp3");
-                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", fileDescriptor.createInputStream(), fileDescriptor.getLength());
-                    } catch (Exception e) {
-
-                    }
+                    response = newFixedLengthResponse(currentSong.toJson());
                     break;
                 case ServerCommand.PLAY:
                     currentSong = playCommand();
-                    //response = newFixedLengthResponse(currentSong.toJson());
-                    try {
-                        AssetFileDescriptor fileDescriptor = assetManager.openFd("cool_girl");
-                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", fileDescriptor.createInputStream(), fileDescriptor.getLength());
-                    } catch (Exception e) {
-
-                    }
+                    response = newFixedLengthResponse(currentSong.toJson());
                     break;
                 case ServerCommand.PAUSE:
                     currentSong = pauseCommand();
@@ -75,12 +64,36 @@ public abstract class ServerHTTPD extends NanoHTTPD {
                     seekToCommand(5000);
                     response = newFixedLengthResponse(ServerCommand.SEEK);
                     break;
+//                case ServerCommand.VOLUME: //TODO
+//                    break;
                 case ServerCommand.SONG:
                     response = newFixedLengthResponse(getCurrentSongCommand().toJson());
                     break;
                 case ServerCommand.STREAM:
                     Boolean isStreaming = toggleStreamMusicCommand();
                     response = newFixedLengthResponse(new Boolean(isStreaming).toString());
+                    break;
+                case ServerCommand.INPUT_STREAM:
+
+                    try {
+                        currentSong = getCurrentSongCommand();
+//                        FileDescriptor fileDescriptor = currentSong.getFileDescriptor(); WARNING !!! this fileDescriptor corrupts the audio file
+                        InputStream inputStream = inputStreamCommand();
+                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", inputStream, currentSong.getFile().length());
+//                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", inputStream, 10 * Long.parseLong(currentSong.getLength()));
+//                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", currentSong.getInputStream(), currentSong.getFile().length());
+                    } catch (Exception e) {
+                        response = newFixedLengthResponse(command + " " + ServerCommand.ERROR);
+                    }
+
+
+//                    BACKUP
+//                    try {
+//                        AssetFileDescriptor fileDescriptor = assetManager.openFd("applause.mp3");
+//                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", fileDescriptor.createInputStream(), fileDescriptor.getLength());
+//                    } catch (Exception e) {
+//
+//                    }
                     break;
                 default:
                     response = newFixedLengthResponse(command + " " + ServerCommand.DOES_NOT_EXIST);
@@ -126,6 +139,8 @@ public abstract class ServerHTTPD extends NanoHTTPD {
     public abstract Boolean shuffleCommand();
 
     public abstract void seekToCommand(int mSec);
+
+    public abstract InputStream inputStreamCommand();
 
     public abstract Song getCurrentSongCommand();
 

@@ -1,15 +1,18 @@
 package com.example.plcus.multimedia;
 
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Path;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
-
 import com.google.gson.Gson;
-
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 class Song {
 
@@ -19,9 +22,10 @@ class Song {
     private String artist;
     private String album;
     private String length;
-    private Bitmap albumImage;
+    private Bitmap albumImage; //TODO
     private String path;
     private String mime;
+    private File file;
 
     public Song(AppCompatActivity activity, int id) {
 //        this.id = id;
@@ -30,6 +34,7 @@ class Song {
 
     public Song(AppCompatActivity activity, File file) {
         this(activity, Uri.fromFile(file));
+        this.file = file;
     }
 
     public Song(AppCompatActivity activity, Uri uri) {
@@ -92,5 +97,28 @@ class Song {
 
     public String getMime() {
         return mime;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public InputStream getInputStream(){
+
+        try {
+            return new FileInputStream(file);
+        }catch (Exception e) {
+
+        }
+        return null;
+    }
+
+    public FileDescriptor getFileDescriptor() {
+        try {
+            return new FileOutputStream(file).getFD();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

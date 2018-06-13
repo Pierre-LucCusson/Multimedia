@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView progressionTimeText;
     private TextView totalTimeText;
 
+    private TextView streamingText;
+    private TextView preparingText;
+
     private SeekBar timeSeekBar;
     private Handler timeSeekBarHandler = new Handler();
 
@@ -62,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
             initShuffleButton();
             initRepeatButton();
             initTimeSeekBar();
+            streamingText = findViewById(R.id.streamingText);
+            preparingText = findViewById(R.id.preparingText);
 
         }
 
@@ -326,6 +331,24 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     albumImageView.setImageResource(android.R.drawable.sym_def_app_icon);
                 }
+            }
+        });
+    }
+
+    public void updateStreamingText(final int idText) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                streamingText.setText(idText);
+            }
+        });
+    }
+
+    public void updatePrepareText(final int idText) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                preparingText.setText(idText);
             }
         });
     }

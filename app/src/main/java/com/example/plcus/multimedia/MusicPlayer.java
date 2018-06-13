@@ -45,7 +45,6 @@ public abstract class MusicPlayer implements IMusicPlayer{
         }
 
         mediaPlayer = MediaPlayer.create(activity, song.getUri());
-        mediaPlayer.setVolume(1,1);
 
         activity.updateViewInformationFor(song);
         initialiseVisualizer();

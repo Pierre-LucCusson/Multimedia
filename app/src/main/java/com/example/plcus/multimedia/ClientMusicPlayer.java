@@ -18,6 +18,8 @@ public class ClientMusicPlayer extends MusicPlayer {
     private String serverIpAddress;
     private Boolean isStreaming;
     private Song songStreaming;
+    private TextView streamingText;
+    private TextView preparingText;
 
     public ClientMusicPlayer(MainActivity activity) {
         askForServerIpAddress(activity);
@@ -26,6 +28,11 @@ public class ClientMusicPlayer extends MusicPlayer {
     @Override
     protected void initialise(MainActivity activity) {
         this.activity = activity;
+
+        streamingText = activity.findViewById(R.id.streamingText);
+        streamingText.setText(R.string.mode_command);
+        preparingText = activity.findViewById(R.id.preparingText);
+
         //TODO client should also be able to stream music with a toggled button
         //TODO the seek should position should be updated when song is playing
         isStreaming = false;
@@ -61,12 +68,22 @@ public class ClientMusicPlayer extends MusicPlayer {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
 
-            String url = "http://" + serverIpAddress + song.getPath();
+//            String url = "http://" + serverIpAddress + song.getPath();
+            String url = "http://" + serverIpAddress + ServerCommand.INPUT_STREAM;
 
             mediaPlayer.setDataSource(url);
-            mediaPlayer.prepare(); //TODO this line crash probably because the url is not good
 
-            mediaPlayer.setVolume(1,1);
+            updatePreparingText(R.string.preparing_song);
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    updatePreparingText(R.string.preparing_song_done);
+                }
+            });
+
+            mediaPlayer.prepareAsync();
+//            mediaPlayer.prepare(); //TODO this line crash probably because the url is not good
 
             activity.updateViewInformationFor(song);
             initialiseVisualizer();
@@ -191,9 +208,11 @@ public class ClientMusicPlayer extends MusicPlayer {
             public void run() {
                 isStreaming = Boolean.valueOf(sendToServerCommand(ServerCommand.STREAM));
                 if(isStreaming) {
+                    updateStreamingText(R.string.mode_streaming);
                     initialiseMusicPlayerForStreaming(ServerCommand.SONG);
                 }
                 else {
+                    updateStreamingText(R.string.mode_command);
                     releaseMediaPlayer();
                 }
             }
@@ -239,5 +258,13 @@ public class ClientMusicPlayer extends MusicPlayer {
     private void updateViewInformationFor(String jsonSong) {
         Song currentSong = new Gson().fromJson(jsonSong, Song.class);
         activity.updateViewInformationFor(currentSong);
+    }
+
+    private void updateStreamingText(int streamTextId) {
+        activity.updateStreamingText(streamTextId);
+    }
+
+    private void updatePreparingText(int preparingTextId) {
+        activity.updatePrepareText(preparingTextId);
     }
 }
