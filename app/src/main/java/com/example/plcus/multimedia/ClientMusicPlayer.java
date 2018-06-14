@@ -32,8 +32,6 @@ public class ClientMusicPlayer extends MusicPlayer {
 
         updateMode(R.string.connecting);
 
-        //TODO client should also be able to stream music with a toggled button
-        //TODO the seek should position should be updated when song is playing
         isStreaming = false;
         new Thread(new Runnable(){
             @Override

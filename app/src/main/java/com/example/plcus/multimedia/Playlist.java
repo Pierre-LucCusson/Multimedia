@@ -26,11 +26,6 @@ public class Playlist {
         setDefaultSongPlaylist();
     }
 
-//    public Playlist(String jsonPlaylist) {
-//        //TODO URI makes Gson crash
-//        songs = Arrays.asList(new Gson().fromJson(jsonPlaylist, Song[].class));
-//    }
-
     private void setDefaultSongPlaylist() {
         songs.clear();
 
