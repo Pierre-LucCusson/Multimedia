@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private GestureDetector gestureDetector;
 
+    private boolean isShuffle;
 
     public ServiceConnection myConnection = new ServiceConnection() {
 
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         playButton = findViewById(R.id.playButton);
         repeatButton = findViewById(R.id.repeatButton);
         shuffleButton = findViewById(R.id.shuffleButton);
+        isShuffle = false;
 
         if (playerService == null) {
             doBindService();
@@ -191,21 +193,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRepeatButton() {
-        //TODO button should be a toggle button instead of a click button
         repeatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 musicPlayer.repeat();
+                int resource;
+                resource = ( musicPlayer.getMediaPlayer().isLooping() ? R.drawable.repeat_active :  R.drawable.repeat_inactive);
+                repeatButton.setImageResource(resource);
             }
         });
     }
 
     private void initShuffleButton() {
-        //TODO button should be a toggle button instead of a click button
         shuffleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 musicPlayer.shuffle();
+                isShuffle = !isShuffle;
+                int resource;
+                resource =( isShuffle ? R.drawable.shuffle_active :  R.drawable.shuffle_inactive);
+                shuffleButton.setImageResource(resource);
             }
         });
     }

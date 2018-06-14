@@ -114,4 +114,7 @@ public abstract class MusicPlayer implements IMusicPlayer{
         }
     }
 
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
 }
