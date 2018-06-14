@@ -1,26 +1,20 @@
 package com.example.plcus.multimedia;
 
-import android.content.res.AssetManager;
-import java.io.FileDescriptor;
 import java.io.InputStream;
 
 import fi.iki.elonen.NanoHTTPD;
 
 public abstract class ServerHTTPD extends NanoHTTPD {
 
-    private AssetManager assetManager;
-
-    public ServerHTTPD(AssetManager assetManager)
+    public ServerHTTPD()
     {
         super(8080);
-        this.assetManager = assetManager;
-
     }
 
     @Override
     public Response serve(IHTTPSession session) {
 
-        Response response = null;
+        Response response;
         if (session.getMethod() == Method.GET) {
             String uri = session.getUri();
             String command = getCommand(uri);
@@ -77,23 +71,11 @@ public abstract class ServerHTTPD extends NanoHTTPD {
 
                     try {
                         currentSong = getCurrentSongCommand();
-//                        FileDescriptor fileDescriptor = currentSong.getFileDescriptor(); WARNING !!! this fileDescriptor corrupts the audio file
                         InputStream inputStream = inputStreamCommand();
                         response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", inputStream, currentSong.getFile().length());
-//                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", inputStream, 10 * Long.parseLong(currentSong.getLength()));
-//                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", currentSong.getInputStream(), currentSong.getFile().length());
                     } catch (Exception e) {
                         response = newFixedLengthResponse(command + " " + ServerCommand.ERROR);
                     }
-
-
-//                    BACKUP
-//                    try {
-//                        AssetFileDescriptor fileDescriptor = assetManager.openFd("applause.mp3");
-//                        response = newFixedLengthResponse(Response.Status.OK, "audio/mp3", fileDescriptor.createInputStream(), fileDescriptor.getLength());
-//                    } catch (Exception e) {
-//
-//                    }
                     break;
                 default:
                     response = newFixedLengthResponse(command + " " + ServerCommand.DOES_NOT_EXIST);

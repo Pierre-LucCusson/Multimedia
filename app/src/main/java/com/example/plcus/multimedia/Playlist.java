@@ -117,4 +117,9 @@ public class Playlist {
         }
     }
 
+    public void setIpAddressToSongs(String ipAddress) {
+        for (Song song : songs) {
+            song.setUrl(ipAddress);
+        }
+    }
 }

@@ -19,6 +19,7 @@ public class ClientMusicPlayer extends MusicPlayer {
     private Song songStreaming;
     private TextView streamingText;
     private TextView preparingText;
+    private boolean isPrepared;
 
     public ClientMusicPlayer(MainActivity activity) {
         askForServerIpAddress(activity);
@@ -27,6 +28,7 @@ public class ClientMusicPlayer extends MusicPlayer {
     @Override
     protected void initialise(MainActivity activity) {
         this.activity = activity;
+        isPrepared = false;
 
         updateMode(R.string.connecting);
 
@@ -82,26 +84,27 @@ public class ClientMusicPlayer extends MusicPlayer {
             mediaPlayer.reset();
         }
 
+        isPrepared = false;
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
 
-//            String url = "http://" + serverIpAddress + song.getPath();
-            String url = "http://" + serverIpAddress + ServerCommand.INPUT_STREAM;
-
-            mediaPlayer.setDataSource(url);
+            mediaPlayer.setDataSource(song.getUrl());
+            // FOR TESTING ON EMULATOR, REPLACE ABOVE LINE WITH BELLOW LINE
+//            mediaPlayer.setDataSource(activity, Uri.parse("android.resource://" + activity.getPackageName() + "/" +R.raw.cool_girl));
 
             updatePreparingText(R.string.preparing_song);
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
 
                 @Override
                 public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                    isPrepared = true;
                     updatePreparingText(R.string.preparing_song_done);
                 }
             });
 
             mediaPlayer.prepareAsync();
-//            mediaPlayer.prepare(); //TODO this line crash probably because the url is not good
 
             activity.updateViewInformationFor(song);
             initialiseVisualizer();
@@ -124,18 +127,71 @@ public class ClientMusicPlayer extends MusicPlayer {
     public void playOrPause() {
         Log.d(this.getClass().getName(), "playButtonClick");
         //TODO button image should change image when server sends for multiple command
+
+        if(isStreaming) {
+            if(mediaPlayer.isPlaying()) {
+                stop();
+            }
+            else {
+                play();
+            }
+        }
+        else {
+            new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    String jsonSong = sendToServerCommand(ServerCommand.PLAY_OR_PAUSE);
+                    if (checkResponse(jsonSong)) {
+                        songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                        activity.updateViewInformationFor(songStreaming);
+                    }
+                }
+            }).start();
+        }
+    }
+
+    public void play() {
         new Thread(new Runnable(){
             @Override
             public void run() {
-                String jsonSong = sendToServerCommand(ServerCommand.PLAY_OR_PAUSE);
-                if( checkResponse(jsonSong) ) {
-                    songStreaming = new Gson().fromJson(jsonSong, Song.class);
-                    activity.updateViewInformationFor(songStreaming);
-                    if (isStreaming) {
-                        if (mediaPlayer.isPlaying()) {
-                            mediaPlayer.pause();
-                            visualizer.setEnabled(false);
-                        } else {
+
+                if(isStreaming) {
+                    if (songStreaming == null) {
+                        String jsonSong = sendToServerCommand(ServerCommand.PLAY);
+                        if (checkResponse(jsonSong)) {
+                            songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                            activity.updateViewInformationFor(songStreaming);
+                            prepareMediaPlayer(songStreaming);
+                        }
+                    }
+                    else {
+                        mediaPlayer.start();
+                        visualizer.setEnabled(true);
+                    }
+                }
+                else {
+                    if (!mediaPlayer.isPlaying()) {
+                        mediaPlayer.start();
+                        visualizer.setEnabled(true);
+                    }
+                }
+
+
+
+
+                if(mediaPlayer.isPlaying()) {
+                    if (songStreaming == null) {
+                        String jsonSong = sendToServerCommand(ServerCommand.PLAY);
+                        if (checkResponse(jsonSong)) {
+                            songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                            activity.updateViewInformationFor(songStreaming);
+                            if (isStreaming) {
+                                prepareMediaPlayer(songStreaming);
+                            }
+                        }
+                    }
+                    else {
+                        if(isStreaming) {
                             mediaPlayer.start();
                             visualizer.setEnabled(true);
                         }
@@ -153,8 +209,10 @@ public class ClientMusicPlayer extends MusicPlayer {
             public void run() {
                 String jsonSong = sendToServerCommand(ServerCommand.STOP);
                 if( checkResponse(jsonSong) ) {
-                    songStreaming = new Gson().fromJson(jsonSong, Song.class);
-                    activity.updateViewInformationFor(songStreaming);
+                    if (songStreaming == null) {
+                        songStreaming = new Gson().fromJson(jsonSong, Song.class);
+                        activity.updateViewInformationFor(songStreaming);
+                    }
                     if (isStreaming) {
                         mediaPlayer.pause();
                         visualizer.setEnabled(false);

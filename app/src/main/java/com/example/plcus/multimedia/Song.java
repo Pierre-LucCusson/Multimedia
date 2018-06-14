@@ -1,6 +1,5 @@
 package com.example.plcus.multimedia;
 
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -8,24 +7,21 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import com.google.gson.Gson;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 class Song {
 
 //    private int id;
-    private transient Uri uri; //TODO this field is ignored when converted toJson because is currently crash
+    private transient Uri uri;
     private String title;
     private String artist;
     private String album;
     private String length;
-    private Bitmap albumImage; //TODO
+    private byte[] albumImage;
     private String path;
-    private String mime;
     private File file;
+    private String url;
 
     public Song(AppCompatActivity activity, int id) {
 //        this.id = id;
@@ -49,12 +45,7 @@ class Song {
         artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST);
         album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
         length = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-        mime = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
-
-        byte[] picture = retriever.getEmbeddedPicture();
-        if( picture != null ){
-            albumImage = BitmapFactory.decodeByteArray(picture, 0, picture.length);
-        }
+        albumImage = retriever.getEmbeddedPicture();
 
         retriever.release();
     }
@@ -87,16 +78,15 @@ class Song {
         return length;
     }
 
-    public Bitmap getAlbumImage() {
-        return albumImage;
+    public Bitmap getAlbumImageInBitMap() {
+        if(albumImage != null) {
+            return BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);
+        }
+        return null;
     }
 
     public String getPath() {
         return path;
-    }
-
-    public String getMime() {
-        return mime;
     }
 
     public File getFile() {
@@ -113,12 +103,11 @@ class Song {
         return null;
     }
 
-    public FileDescriptor getFileDescriptor() {
-        try {
-            return new FileOutputStream(file).getFD();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public String getUrl(){
+        return url;
+    }
+
+    public void setUrl(String serverIpAddress) {
+        url = "http://" + serverIpAddress + "/8080" + ServerCommand.INPUT_STREAM; //TODO put in preference
     }
 }

@@ -13,7 +13,7 @@
 
     <string name="ip_address_required">"IP Address Required"</string>
     <string name="ask_for_server_ip_address">"Please enter the IP Address of the server"</string>
-    <string name="default_server_ip_address">"192.168.0.63:8080"</string>
+    <string name="default_server_ip_address">"192.168.0.116:8080"</string>
     <string name="connecting">"Trying to connect, please wait"</string>
     <string name="not_connected">"Server is not responding or IP address is does not exist"</string>
     <string name="permission_access_network_state_is_required">Please accept permission ACCESS_NETWORK_STATE.</string>

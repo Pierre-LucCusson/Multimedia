@@ -28,7 +28,7 @@ public class ServerMusicPlayer extends MusicPlayer {
         playlist = new Playlist(activity);
         prepareMediaPlayer(playlist.getCurrentSong());
 
-        serverHTTPD = new ServerHTTPD(activity.getAssets()) {
+        serverHTTPD = new ServerHTTPD() {
             @Override
             public Song playOrPauseCommand() {
                 playOrPause();
@@ -113,6 +113,7 @@ public class ServerMusicPlayer extends MusicPlayer {
             WifiManager wifiManager = (WifiManager) activity.getApplicationContext().getSystemService(WIFI_SERVICE);
             String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
             ipText.setText(ipAddress);
+            playlist.setIpAddressToSongs(ipAddress);
         } catch (Exception e) {
             Toast.makeText(activity, R.string.permission_access_network_state_is_required, Toast.LENGTH_LONG).show();
         }
@@ -121,11 +122,12 @@ public class ServerMusicPlayer extends MusicPlayer {
     @Override
     public void playOrPause() {
         Log.d(this.getClass().getName(), "playButtonClick");
-        if(mediaPlayer.isPlaying()){
-            pause();
-        }
-        else {
-            play();
+        if (!isStreaming) {
+            if (mediaPlayer.isPlaying()) {
+                pause();
+            } else {
+                play();
+            }
         }
     }
 
@@ -140,7 +142,10 @@ public class ServerMusicPlayer extends MusicPlayer {
     @Override
     public void previous() {
         Log.d(this.getClass().getName(), "previousButtonClick");
-        if(!isStreaming) {
+        if(isStreaming) {
+            playlist.getPreviousSong();
+        }
+        else {
             playSong(playlist.getPreviousSong());
         }
     }
@@ -148,7 +153,10 @@ public class ServerMusicPlayer extends MusicPlayer {
     @Override
     public void next() {
         Log.d(this.getClass().getName(), "nextButtonClick");
-        if(!isStreaming) {
+        if(isStreaming) {
+            playlist.getNextSong();
+        }
+        else {
             playSong(playlist.getNextSong());
             mediaPlayer.start();
         }

@@ -332,8 +332,8 @@ public class MainActivity extends AppCompatActivity {
                 artistText.setText(song.getArtist());
                 albumText.setText(song.getAlbum());
 
-                if (song.getAlbumImage() != null) {
-                    albumImageView.setImageBitmap(song.getAlbumImage());
+                if (song.getAlbumImageInBitMap() != null) {
+                    albumImageView.setImageBitmap(song.getAlbumImageInBitMap());
                 }
                 else{
                     albumImageView.setImageResource(android.R.drawable.sym_def_app_icon);
