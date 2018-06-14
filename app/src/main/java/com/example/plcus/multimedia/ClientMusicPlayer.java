@@ -2,6 +2,7 @@ package com.example.plcus.multimedia;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class ClientMusicPlayer extends MusicPlayer {
 
@@ -306,7 +309,19 @@ public class ClientMusicPlayer extends MusicPlayer {
 
     private void askForServerIpAddress(final MainActivity activity) {
         final EditText editText = new EditText(activity);
-        editText.setText(R.string.default_server_ip_address, TextView.BufferType.EDITABLE);
+
+        String ipAddr = activity.getString(R.string.default_server_ip_address);
+        String port = activity.getString(R.string.default_server_port);
+
+        // Retrieve data from the preferences to display it
+        SharedPreferences prefs = activity.getSharedPreferences("MyPrefsSettings", MODE_PRIVATE);
+        String restoredText = prefs.getString("ipAddr", null);
+        if (restoredText != null) {
+            ipAddr = prefs.getString("ipAddr", ipAddr);
+            port = prefs.getString("port", port);
+        }
+
+        editText.setText(ipAddr + ":" + port, TextView.BufferType.EDITABLE);
 
         AlertDialog alertDialog = new AlertDialog.Builder(activity).create();
         alertDialog.setTitle(R.string.ip_address_required);
@@ -316,7 +331,17 @@ public class ClientMusicPlayer extends MusicPlayer {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         serverIpAddress = editText.getText().toString();
-                        client = new ClientHTTP(serverIpAddress);
+                        String[] tab = serverIpAddress.split(":");
+                        String ipAddr = tab[0];
+                        String port = tab[1];
+
+                        // Set preferences for server ip and port
+                        SharedPreferences.Editor editor = activity.getSharedPreferences("MyPrefsSettings", MODE_PRIVATE).edit();
+                        editor.putString("ipAddr", ipAddr);
+                        editor.putString("port", port);
+                        editor.apply();
+
+                        client = new ClientHTTP(ipAddr, port);
                         initialise(activity);
                         dialog.dismiss();
                     }

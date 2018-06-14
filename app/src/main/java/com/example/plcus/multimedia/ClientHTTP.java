@@ -7,9 +7,11 @@ import okhttp3.Response;
 public class ClientHTTP {
 
     private String serverIpAddress;
+    private String port;
 
-    public ClientHTTP(String serverIpAddress) {
+    public ClientHTTP(String serverIpAddress, String port) {
         this.serverIpAddress = "http://" + serverIpAddress;
+        this.port = port;
     }
 
     OkHttpClient client = new OkHttpClient();
@@ -17,7 +19,7 @@ public class ClientHTTP {
     public String run(String url) {
 
         Request request = new Request.Builder()
-                .url(serverIpAddress + url)
+                .url(serverIpAddress + port + url)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
