@@ -14,6 +14,8 @@ import com.google.gson.Gson;
 
 import static android.content.Context.MODE_PRIVATE;
 
+// SharedPreferences inspiration :
+// https://stackoverflow.com/questions/23024831/android-shared-preferences-example
 public class ClientMusicPlayer extends MusicPlayer {
 
     private ClientHTTP client;
