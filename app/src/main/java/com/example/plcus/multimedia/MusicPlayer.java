@@ -1,8 +1,10 @@
 package com.example.plcus.multimedia;
 
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
+import android.widget.SeekBar;
 
 public abstract class MusicPlayer implements IMusicPlayer{
 
@@ -11,6 +13,7 @@ public abstract class MusicPlayer implements IMusicPlayer{
     protected Playlist playlist;
 
     protected Visualizer visualizer;
+    private AudioManager audioManager;
 
     protected abstract void initialise(MainActivity activity);
 
@@ -32,6 +35,11 @@ public abstract class MusicPlayer implements IMusicPlayer{
         if (mediaPlayer != null) {
             mediaPlayer.seekTo(mSec);
         }
+    }
+
+    public void setVolumeTo(int level) {
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                level, 0);
     }
 
     protected void playSong(Song song) {
@@ -116,5 +124,34 @@ public abstract class MusicPlayer implements IMusicPlayer{
 
     public MediaPlayer getMediaPlayer() {
         return mediaPlayer;
+    }
+
+    public void initializeVolume()
+    {
+        SeekBar volumeBar = activity.findViewById(R.id.volumeBar);
+        audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
+        volumeBar.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        volumeBar.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+
+
+        volumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
+            @Override
+            public void onStopTrackingTouch(SeekBar arg0)
+            {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar arg0)
+            {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar arg0, int progress, boolean arg2)
+            {
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        progress, 0);
+            }
+        });
     }
 }

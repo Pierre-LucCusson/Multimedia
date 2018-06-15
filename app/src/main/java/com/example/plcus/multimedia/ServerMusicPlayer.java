@@ -27,7 +27,7 @@ public class ServerMusicPlayer extends MusicPlayer {
 
         playlist = new Playlist(activity);
         prepareMediaPlayer(playlist.getCurrentSong());
-
+        initializeVolume();
         serverHTTPD = new ServerHTTPD() {
             @Override
             public Song playOrPauseCommand() {
@@ -80,6 +80,11 @@ public class ServerMusicPlayer extends MusicPlayer {
             @Override
             public void seekToCommand(int mSec) {
                 seekTo(mSec);
+            }
+
+            @Override
+            public void setVolumeCommand(int level) {
+                setVolumeTo(level);
             }
 
             @Override

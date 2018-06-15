@@ -122,6 +122,8 @@ public abstract class ServerHTTPD extends NanoHTTPD {
 
     public abstract void seekToCommand(int mSec);
 
+    public abstract void setVolumeCommand(int level);
+
     public abstract InputStream inputStreamCommand();
 
     public abstract Song getCurrentSongCommand();

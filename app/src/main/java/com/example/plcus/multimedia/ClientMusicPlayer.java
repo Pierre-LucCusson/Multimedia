@@ -34,7 +34,7 @@ public class ClientMusicPlayer extends MusicPlayer {
     protected void initialise(MainActivity activity) {
         this.activity = activity;
         isPrepared = false;
-
+        initializeVolume();
         updateMode(R.string.connecting);
 
         isStreaming = false;
