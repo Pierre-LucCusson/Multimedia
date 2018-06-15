@@ -44,7 +44,7 @@ public abstract class MusicPlayer implements IMusicPlayer{
 
     protected void playSong(Song song) {
         prepareMediaPlayer(song);
-        mediaPlayer.start();
+//        mediaPlayer.start();
     }
 
     protected void prepareMediaPlayer(Song song) {
@@ -110,7 +110,7 @@ public abstract class MusicPlayer implements IMusicPlayer{
     public void releaseMediaPlayer() {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause();
+                mediaPlayer.stop();
             }
             mediaPlayer.release();
             mediaPlayer = null;

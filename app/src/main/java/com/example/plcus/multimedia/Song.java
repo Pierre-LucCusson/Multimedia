@@ -26,6 +26,7 @@ class Song {
     public Song(AppCompatActivity activity, int id) {
 //        this.id = id;
         this(activity, Uri.parse("android.resource://" + activity.getPackageName() + "/" + id));
+        file =  new File(uri.getPath());
     }
 
     public Song(AppCompatActivity activity, File file) {
@@ -108,6 +109,6 @@ class Song {
     }
 
     public void setUrl(String serverIpAddress) {
-        url = "http://" + serverIpAddress + "/8080" + ServerCommand.INPUT_STREAM; //TODO put in preference
+        url = "http://" + serverIpAddress + ":8080" + ServerCommand.INPUT_STREAM;
     }
 }

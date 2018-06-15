@@ -287,16 +287,19 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                if(musicPlayer != null && !musicPlayer.isMediaPlayerNull()){
+                try {
+                    if (musicPlayer != null && musicPlayer.isPlaying()) {
+                        int totalTime = musicPlayer.getMediaPlayerDuration() / 1000;
+                        int currentTime = musicPlayer.getMediaPlayerCurrentPosition() / 1000;
 
-                    int currentTime = musicPlayer.getMediaPlayerCurrentPosition() / 1000;
-                    int totalTime = musicPlayer.getMediaPlayerDuration() / 1000;
+                        timeSeekBar.setMax(totalTime);
+                        timeSeekBar.setProgress(currentTime);
 
-                    timeSeekBar.setMax(totalTime);
-                    timeSeekBar.setProgress(currentTime);
-
-                    progressionTimeText.setText(String.format("%2d:%2d", currentTime / 60, currentTime % 60));
-                    totalTimeText.setText(String.format("%2d:%2d", totalTime / 60, totalTime % 60));
+                        progressionTimeText.setText(String.format("%2d:%2d", currentTime / 60, currentTime % 60));
+                        totalTimeText.setText(String.format("%2d:%2d", totalTime / 60, totalTime % 60));
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
                 timeSeekBarHandler.postDelayed(this, 1000);
             }

@@ -68,7 +68,6 @@ public class ClientMusicPlayer extends MusicPlayer {
     }
 
     private void initialiseMusicPlayerForStreaming(final String serverCommand) {
-        releaseMediaPlayer();
         new Thread(new Runnable(){
             @Override
             public void run() {
@@ -83,9 +82,8 @@ public class ClientMusicPlayer extends MusicPlayer {
 
     @Override
     public void prepareMediaPlayer(Song song) {
-        if(mediaPlayer != null) {
-            mediaPlayer.reset();
-        }
+
+        releaseMediaPlayer();
 
         isPrepared = false;
         mediaPlayer = new MediaPlayer();
@@ -93,10 +91,8 @@ public class ClientMusicPlayer extends MusicPlayer {
         try {
 
             mediaPlayer.setDataSource(song.getUrl());
-            // FOR TESTING ON EMULATOR, REPLACE ABOVE LINE WITH BELLOW LINE
-//            mediaPlayer.setDataSource(activity, Uri.parse("android.resource://" + activity.getPackageName() + "/" +R.raw.cool_girl));
-
             updatePreparingText(R.string.preparing_song);
+
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
 
                 @Override
@@ -106,18 +102,19 @@ public class ClientMusicPlayer extends MusicPlayer {
                     updatePreparingText(R.string.preparing_song_done);
                 }
             });
-
-            mediaPlayer.prepareAsync();
-
-            activity.updateViewInformationFor(song);
             initialiseVisualizer();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
-                    playSong(songStreaming);
+//                    playSong(songStreaming); //  TODO did this break something ?
+                    next();
                     visualizer.setEnabled(false);
                 }
             });
+            mediaPlayer.prepareAsync();
+
+            activity.updateViewInformationFor(song);
+
         }
         catch (Exception e) {
             isStreaming = false;
@@ -176,28 +173,6 @@ public class ClientMusicPlayer extends MusicPlayer {
                     if (!mediaPlayer.isPlaying()) {
                         mediaPlayer.start();
                         visualizer.setEnabled(true);
-                    }
-                }
-
-
-
-
-                if(mediaPlayer.isPlaying()) {
-                    if (songStreaming == null) {
-                        String jsonSong = sendToServerCommand(ServerCommand.PLAY);
-                        if (checkResponse(jsonSong)) {
-                            songStreaming = new Gson().fromJson(jsonSong, Song.class);
-                            activity.updateViewInformationFor(songStreaming);
-                            if (isStreaming) {
-                                prepareMediaPlayer(songStreaming);
-                            }
-                        }
-                    }
-                    else {
-                        if(isStreaming) {
-                            mediaPlayer.start();
-                            visualizer.setEnabled(true);
-                        }
                     }
                 }
             }
@@ -267,9 +242,11 @@ public class ClientMusicPlayer extends MusicPlayer {
         new Thread(new Runnable(){
             @Override
             public void run() {
-                Boolean isLooping = Boolean.valueOf(sendToServerCommand(ServerCommand.LOOP));
                 if (isStreaming) {
-                    mediaPlayer.setLooping(isLooping);
+                    mediaPlayer.setLooping(!mediaPlayer.isLooping());
+                }
+                else {
+                    Boolean isLooping = Boolean.valueOf(sendToServerCommand(ServerCommand.LOOP));
                 }
             }
         }).start();
@@ -291,22 +268,27 @@ public class ClientMusicPlayer extends MusicPlayer {
     }
 
     @Override
+    public void seekTo(int mSec) {
+        if (isStreaming) {
+            super.seekTo(mSec);
+        }
+        else {
+            sendToServerCommand(ServerCommand.SEEK);
+        }
+    }
+
+    @Override
     public void toggleStreamMusicState() {
         Log.d(this.getClass().getName(), "shuffleButtonClick");
-        new Thread(new Runnable(){
-            @Override
-            public void run() {
-                isStreaming = Boolean.valueOf(sendToServerCommand(ServerCommand.STREAM));
-                if(isStreaming) {
-                    updateStreamingText(R.string.mode_streaming);
-                    initialiseMusicPlayerForStreaming(ServerCommand.SONG);
-                }
-                else {
-                    updateStreamingText(R.string.mode_command);
-                    releaseMediaPlayer();
-                }
-            }
-        }).start();
+        isStreaming = !isStreaming;
+        if(isStreaming) {
+            updateStreamingText(R.string.mode_streaming);
+            initialiseMusicPlayerForStreaming(ServerCommand.SONG);
+        }
+        else {
+            updateStreamingText(R.string.mode_command);
+            releaseMediaPlayer();
+        }
     }
 
     private void askForServerIpAddress(final MainActivity activity) {
@@ -395,4 +377,21 @@ public class ClientMusicPlayer extends MusicPlayer {
     private void updatePreparingText(int preparingTextId) {
         activity.updatePrepareText(preparingTextId);
     }
+
+//    @Override
+//    public void onCompletion(MediaPlayer mp) {
+//        playSong(songStreaming);
+//        visualizer.setEnabled(false);
+//    }
+
+//    @Override
+//    public void onPrepared(MediaPlayer mp) {
+//        mp.start();
+//    }
+//
+//    @Override
+//    public boolean onError(MediaPlayer mp, int what, int extra) {
+////        Toast.makeText(activity, "Error preparing stream", Toast.LENGTH_LONG).show();
+//        return false;
+//    }
 }

@@ -16,9 +16,10 @@ public class ServerMusicPlayer extends MusicPlayer {
     private Boolean isStreaming = false;
     private TextView streamingText;
     private TextView preparingText;
+    private String ipAddress;
 
     @Override
-    public void initialise(MainActivity activity) {
+    public void initialise(final MainActivity activity) {
         this.activity = activity;
 
         streamingText = activity.findViewById(R.id.streamingText);
@@ -32,12 +33,14 @@ public class ServerMusicPlayer extends MusicPlayer {
             @Override
             public Song playOrPauseCommand() {
                 playOrPause();
+                activity.updateViewInformationFor(playlist.getCurrentSong());
                 return playlist.getCurrentSong();
             }
 
             @Override
             public Song playCommand() {
                 play();
+                activity.updateViewInformationFor(playlist.getCurrentSong());
                 return playlist.getCurrentSong();
             }
 
@@ -56,12 +59,14 @@ public class ServerMusicPlayer extends MusicPlayer {
             @Override
             public Song previousCommand() {
                 previous();
+                activity.updateViewInformationFor(playlist.getCurrentSong());
                 return playlist.getCurrentSong();
             }
 
             @Override
             public Song nextCommand() {
                 next();
+                activity.updateViewInformationFor(playlist.getCurrentSong());
                 return playlist.getCurrentSong();
             }
 
@@ -116,7 +121,7 @@ public class ServerMusicPlayer extends MusicPlayer {
         try {
             TextView ipText = activity.findViewById(R.id.ipText);
             WifiManager wifiManager = (WifiManager) activity.getApplicationContext().getSystemService(WIFI_SERVICE);
-            String ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
+            ipAddress = Formatter.formatIpAddress(wifiManager.getConnectionInfo().getIpAddress());
             ipText.setText(ipAddress);
             playlist.setIpAddressToSongs(ipAddress);
         } catch (Exception e) {
@@ -182,9 +187,8 @@ public class ServerMusicPlayer extends MusicPlayer {
     @Override
     public void shuffle() {
         Log.d(this.getClass().getName(), "shuffleButtonClick");
-        if(!isStreaming) {
-            playlist.shuffle();
-        }
+        playlist.shuffle();
+        playlist.setIpAddressToSongs(ipAddress);
     }
 
     @Override

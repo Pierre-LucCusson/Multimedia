@@ -19,7 +19,7 @@ public class ClientHTTP {
     public String run(String url) {
 
         Request request = new Request.Builder()
-                .url(serverIpAddress + port + url)
+                .url(serverIpAddress + ":" + port + url)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
